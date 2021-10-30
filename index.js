@@ -4,6 +4,24 @@ let gl; // WebGL "context"
 let vBuffer;
 let cBuffer;
 let points;
+let canvas;
+
+var near = 0.3;
+var far = 3.0;
+var radius = 4.0;
+var theta  = 0.0;
+var phi    = 0.0;
+var dr = 5.0 * Math.PI/180.0;
+
+var  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
+var  aspect;       // Viewport aspect ratio
+
+var modelViewMatrix, projectionMatrix;
+var modelViewMatrixLoc, projectionMatrixLoc;
+var eye;
+const at = vec3(0.0, 0.0, 0.0);
+const up = vec3(0.0, 1.0, 0.0);
+
 
 function map_point(P, Q, A, B, X) {
   let alpha;
@@ -138,27 +156,32 @@ function clamp(x, min, max) {
   return Math.min(max, Math.max(min, x));
 }
 
+
+//--------------------------------------------------------------------------------------------------------------------------
+
+let transformMatrixUniform; 
 window.onload = function init() {
-  let canvas = document.getElementById("gl-canvas");
+  canvas = document.getElementById("gl-canvas");
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
 
   //  Configure WebGL
   gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(1.0, 1.0, 1.0, 1.0);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
   //  Load shaders and initialize attribute buffers
   let program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
+  // transformMatrixUniform = gl.getUniformLocation(program, "uTransformMatrix");
 
   // points = get_patch(0, 600, 0, 0);
-  points = make2DMesh(vec2(0, 0), vec2(600, 600), 50, 50);
+  points = make2DMesh(vec2(0, 0), vec2(canvas.width, canvas.height), 50, 50);
   for (let i = 0; i < points.length; i++) {
     let y = getHeight(points[i][0], points[i][2]);
-    points[i][1] = map_point(0, 600, 0, 1, y);
-    points[i][0] = map_point(0, 600, -1, 1, points[i][0]);
-    points[i][2] = map_point(0, 600, -1, 1, points[i][2]);
+    points[i][1] = map_point(0, canvas.height, 0, 1, y);
+    points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
+    points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
   }
   // console.log(points);
   // Associate out shader variables with our data buffer
@@ -176,6 +199,9 @@ window.onload = function init() {
   let colorLoc = gl.getAttribLocation(program, "vColor");
   gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
+  modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
+  projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
+
 
   render();
 };
@@ -185,38 +211,33 @@ function render() {
   console.log(points);
   let colors = [];
   for (let i = 0; i < points.length; i++) {
-    let color = vec3(Math.random(), Math.random(), Math.random());
-    colors.push(color);
-    colors.push(color);
-    colors.push(color);
+if (points[i][1]<0){
+  //blue
+  colors.push(vec3(0.0,0.0,1.0))
+}
+else if (0.0<points[i][1] && points[i][1] <0.05){
+  //brown
+  colors.push(vec3(0.8,0.5,0.02))
+}
+else if (points[i][1]>0.1){
+  //white
+  colors.push(vec3(1.0,1.0,1.0))
+}
+else{
+  colors.push(vec3(0.0,1.0,0.0))
+}
   }
+
+   eye = vec3(radius*Math.sin(theta)*Math.cos(phi), 
+        radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
 
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
   gl.drawArrays(gl.TRIANGLES, 0, points.length);
-  // gl.drawArrays(gl.LINES, 0, points.length);
 
-  // gl.drawArrays(gl.TRIANGLES, 0, points.length);
-  // if (points.length > 0) {
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  //   gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  //   gl.bufferData(gl.ARRAY_BUFFER, flatten(pColors), gl.STATIC_DRAW);
-  //   gl.drawArrays(gl.POINTS, 0, points.length);
-  // }
-  // if (triangles.length > 0) {
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  //   gl.bufferData(gl.ARRAY_BUFFER, flatten(triangles), gl.STATIC_DRAW);
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  //   gl.bufferData(gl.ARRAY_BUFFER, flatten(tColors), gl.STATIC_DRAW);
-  //   gl.drawArrays(gl.TRIANGLES, 0, triangles.length);
-  // }
+  modelViewMatrix = lookAt(eye, at , up);
+  projectionMatrix = perspective(fovy, aspect, near, far);
 
-  // if (squares.length > 0) {
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  //   gl.bufferData(gl.ARRAY_BUFFER, flatten(squares), gl.STATIC_DRAW);
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  //   gl.bufferData(gl.ARRAY_BUFFER, flatten(sColors), gl.STATIC_DRAW);
-  //   gl.drawArrays(gl.TRIANGLES, 0, squares.length);
-  // }
+    gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
+    gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 }

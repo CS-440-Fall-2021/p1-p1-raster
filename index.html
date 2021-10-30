@@ -3,7 +3,16 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UT-8">
-    <title>Polygons Galore</title>
+    <title>Index</title>
+    <style>
+        /* make the canvas fill its container */
+        #gl-canvas {
+          width: 80%;
+          height: 80%;
+          /* display: block; */
+          /* background-color: black; */
+        }
+      </style>
 
     <script id="vertex-shader" type="x-shader/x-vertex">
         #version 300 es
@@ -11,6 +20,9 @@
         in vec4 vPosition;  // attribute
         in vec3 vColor;  // attribute
         out vec4 vtxColor;
+        //uniform mat4 uTransformMatrix;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
 
         void main()
         {
@@ -19,7 +31,9 @@
             mat3 rotation = mat3(c,  0,  s,               
             0,  1,  0,               
             -s, 0,  c);                         
-            gl_Position = vec4(vPosition.xyz * rotation, 1);; // vertex position in CAMERA COORDINATES
+            //gl_Position = projectionMatrix*modelViewMatrix*vPosition; // vertex position in CAMERA COORDINATES
+            gl_Position = vPosition; // vertex position in CAMERA COORDINATES
+
             gl_PointSize = 10.0;
             vtxColor = vec4(vColor, 1.0);
         }
@@ -31,6 +45,7 @@
 
         in vec4 vtxColor;
         out vec4 fragColor;
+        
 
         void main()
         {
@@ -46,7 +61,7 @@
 
 <body>
 
-    <h1>Polygons Galore</h1>
+    <h1>Index</h1>
     <h1 id="mode" style="margin-bottom: 0;"></h1>
     <br>
 
