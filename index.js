@@ -9,19 +9,18 @@ let canvas;
 var near = 0.3;
 var far = 3.0;
 var radius = 4.0;
-var theta  = 0.0;
-var phi    = 0.0;
-var dr = 5.0 * Math.PI/180.0;
+var theta = 0.0;
+var phi = 0.0;
+var dr = (5.0 * Math.PI) / 180.0;
 
-var  fovy = 45.0;  // Field-of-view in Y direction angle (in degrees)
-var  aspect;       // Viewport aspect ratio
+var fovy = 45.0; // Field-of-view in Y direction angle (in degrees)
+var aspect; // Viewport aspect ratio
 
 var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
 var eye;
-const at = vec3(0.0, 0.0, 0.0);
-const up = vec3(0.0, 1.0, 0.0);
-
+let at = vec3(0.0, 0.0, 0.0);
+let up = vec3(0.0, 1.0, 0.0);
 
 function map_point(P, Q, A, B, X) {
   let alpha;
@@ -156,10 +155,9 @@ function clamp(x, min, max) {
   return Math.min(max, Math.max(min, x));
 }
 
-
 //--------------------------------------------------------------------------------------------------------------------------
 
-let transformMatrixUniform; 
+let transformMatrixUniform;
 window.onload = function init() {
   canvas = document.getElementById("gl-canvas");
   gl = canvas.getContext("webgl2");
@@ -167,7 +165,7 @@ window.onload = function init() {
 
   //  Configure WebGL
   gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(0.0, 0.7, 0.8, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
   //  Load shaders and initialize attribute buffers
@@ -176,14 +174,14 @@ window.onload = function init() {
   // transformMatrixUniform = gl.getUniformLocation(program, "uTransformMatrix");
 
   // points = get_patch(0, 600, 0, 0);
-  points = make2DMesh(vec2(0, 0), vec2(canvas.width, canvas.height), 50, 50);
+  points = make2DMesh(vec2(0, 0), vec2(canvas.width, canvas.height), 30, 30);
   for (let i = 0; i < points.length; i++) {
     let y = getHeight(points[i][0], points[i][2]);
     points[i][1] = map_point(0, canvas.height, 0, 1, y);
     points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
     points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
   }
-  // console.log(points);
+
   // Associate out shader variables with our data buffer
   vBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
@@ -199,45 +197,52 @@ window.onload = function init() {
   let colorLoc = gl.getAttribLocation(program, "vColor");
   gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(colorLoc);
-  modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
-  projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
+  modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
+  projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
 
+  aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
 
   render();
 };
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
-  console.log(points);
   let colors = [];
   for (let i = 0; i < points.length; i++) {
-if (points[i][1]<0){
-  //blue
-  colors.push(vec3(0.0,0.0,1.0))
-}
-else if (0.0<points[i][1] && points[i][1] <0.05){
-  //brown
-  colors.push(vec3(0.8,0.5,0.02))
-}
-else if (points[i][1]>0.1){
-  //white
-  colors.push(vec3(1.0,1.0,1.0))
-}
-else{
-  colors.push(vec3(0.0,1.0,0.0))
-}
+    if (points[i][1] < 0) {
+      //blue
+      colors.push(vec3(0.0, 0.0, 1.0));
+    } else if (0.0 < points[i][1] && points[i][1] < 0.05) {
+      //brown
+      colors.push(vec3(0.8, 0.5, 0.02));
+    } else if (points[i][1] > 0.1) {
+      //white
+      colors.push(vec3(1.0, 1.0, 1.0));
+    } else {
+      colors.push(vec3(0.0, 1.0, 0.0));
+    }
   }
 
-   eye = vec3(radius*Math.sin(theta)*Math.cos(phi), 
-        radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
+  eye = vec3(
+    radius * Math.sin(theta) * Math.cos(phi),
+    radius * Math.sin(theta) * Math.sin(phi),
+    radius * Math.cos(theta)
+  );
 
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-  gl.drawArrays(gl.TRIANGLES, 0, points.length);
 
-  modelViewMatrix = lookAt(eye, at , up);
+  eye = vec3(1.0, 1.0, 1.0);
+  modelViewMatrix = lookAt(eye, at, up);
+  var left = -1.0;
+  var right = 1.0;
+  var ytop = 1.0;
+  var bottom = -1.0;
   projectionMatrix = perspective(fovy, aspect, near, far);
+  // projectionMatrix = ortho(left, right, bottom, ytop, near, far);
 
-    gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
-    gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
+  gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+  gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
+
+  gl.drawArrays(gl.TRIANGLES, 0, points.length);
 }

@@ -7,12 +7,12 @@
     <style>
         /* make the canvas fill its container */
         #gl-canvas {
-          width: 80%;
-          height: 80%;
-          /* display: block; */
-          /* background-color: black; */
+            width: 80%;
+            height: 80%;
+            /* display: block; */
+            /* background-color: black; */
         }
-      </style>
+    </style>
 
     <script id="vertex-shader" type="x-shader/x-vertex">
         #version 300 es
@@ -31,8 +31,8 @@
             mat3 rotation = mat3(c,  0,  s,               
             0,  1,  0,               
             -s, 0,  c);                         
-            //gl_Position = projectionMatrix*modelViewMatrix*vPosition; // vertex position in CAMERA COORDINATES
-            gl_Position = vPosition; // vertex position in CAMERA COORDINATES
+            gl_Position = projectionMatrix*modelViewMatrix*vPosition; // vertex position in CAMERA COORDINATES
+            //gl_Position = vPosition; // vertex position in CAMERA COORDINATES
 
             gl_PointSize = 10.0;
             vtxColor = vec4(vColor, 1.0);
