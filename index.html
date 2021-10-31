@@ -3,12 +3,12 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UT-8">
-    <title>Index</title>
+    <title>Flight Simulator</title>
     <style>
         /* make the canvas fill its container */
         #gl-canvas {
-            width: 80%;
-            height: 80%;
+            width: 50%;
+            height: 50%;
             /* display: block; */
             /* background-color: black; */
         }
@@ -34,7 +34,7 @@
             gl_Position = projectionMatrix*modelViewMatrix*vPosition; // vertex position in CAMERA COORDINATES
             //gl_Position = vPosition; // vertex position in CAMERA COORDINATES
 
-            gl_PointSize = 10.0;
+            gl_PointSize = 5.0;
             vtxColor = vec4(vColor, 1.0);
         }
     </script>
@@ -61,7 +61,7 @@
 
 <body>
 
-    <h1>Index</h1>
+    <h1>Flight Simulator</h1>
     <h1 id="mode" style="margin-bottom: 0;"></h1>
     <br>
 

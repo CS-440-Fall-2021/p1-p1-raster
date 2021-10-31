@@ -22,6 +22,9 @@ var eye;
 let at = vec3(0.0, 0.0, 0.0);
 let up = vec3(0.0, 1.0, 0.0);
 
+var drawmodes = ["t", "p", "l"];
+var drawmode_idx = 0;
+
 function map_point(P, Q, A, B, X) {
   let alpha;
 
@@ -32,19 +35,6 @@ function map_point(P, Q, A, B, X) {
   else alpha = (X[0] - P[0]) / (Q[0] - P[0]);
 
   return mix(A, B, alpha);
-}
-
-function get_patch(xmin, xmax, zmin, zmax) {
-  let points = [];
-  let x = xmin;
-  while (x < xmax) {
-    points.push(vec3(x, x, 0));
-    points.push(vec3(x + 10, x + 10, 0));
-    points.push(vec3(x + 10, 0, 0));
-    points.push(vec3(0, x + 10, 0));
-    x += 10;
-  }
-  return points;
 }
 
 // This is Ken Perlin's "smootherstep" function, whose first and second
@@ -98,16 +88,14 @@ function getHeight(x, z) {
   return perlin(x, z);
 }
 
-// make2DMesh
-// Inputs:
-//    xzMin: vec2 defining x and z minimum coordinates for mesh
-//    xzMax: vec2 defining x and z maximum coordinates for mesh
-//    xDivs: number of columns in x direction
-//    zDivs: number of rows in z direction
-function make2DMesh(xzMin, xzMax, xDivs, zDivs) {
+function get_patch(xmin, xmax, zmin, zmax) {
+  var xzMin = vec2(xmin, zmin);
+  var xzMax = vec2(xmax, zmax);
+  var xDivs = 30;
+  var zDivs = 30;
   var ret = [];
   if (xzMin.type != "vec2" || xzMax.type != "vec2") {
-    throw "make2DMesh: either xzMin or xzMax is not a vec2";
+    throw "get_patch: either xzMin or xzMax is not a vec2";
   }
 
   var dim = subtract(xzMax, xzMin);
@@ -162,10 +150,11 @@ window.onload = function init() {
   canvas = document.getElementById("gl-canvas");
   gl = canvas.getContext("webgl2");
   if (!gl) alert("WebGL 2.0 isn't available");
+  // drawmode = gl.TRIANGLES;
 
   //  Configure WebGL
   gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(0.0, 0.7, 0.8, 1.0);
+  gl.clearColor(0.55686, 0.70196, 0.81961, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
   //  Load shaders and initialize attribute buffers
@@ -173,8 +162,9 @@ window.onload = function init() {
   gl.useProgram(program);
   // transformMatrixUniform = gl.getUniformLocation(program, "uTransformMatrix");
 
-  // points = get_patch(0, 600, 0, 0);
-  points = make2DMesh(vec2(0, 0), vec2(canvas.width, canvas.height), 30, 30);
+  // get_patch(xmin, xmax, zmin, zmax)
+  points = get_patch(0, canvas.width, 0, canvas.height);
+
   for (let i = 0; i < points.length; i++) {
     let y = getHeight(points[i][0], points[i][2]);
     points[i][1] = map_point(0, canvas.height, 0, 1, y);
@@ -202,6 +192,20 @@ window.onload = function init() {
 
   aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
 
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key == "V" || event.key == "v") {
+        drawmode_idx++;
+        if (drawmode_idx > 2) {
+          drawmode_idx = 0;
+        }
+        render();
+      }
+    },
+    false
+  );
+
   render();
 };
 
@@ -209,17 +213,17 @@ function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   let colors = [];
   for (let i = 0; i < points.length; i++) {
-    if (points[i][1] < 0) {
+    if (points[i][1] < -0.05) {
       //blue
-      colors.push(vec3(0.0, 0.0, 1.0));
-    } else if (0.0 < points[i][1] && points[i][1] < 0.05) {
+      colors.push(vec3(0.18039, 0.22353, 0.55686));
+    } else if (0.0 < points[i][1] && points[i][1] < 0.06) {
       //brown
-      colors.push(vec3(0.8, 0.5, 0.02));
-    } else if (points[i][1] > 0.1) {
+      colors.push(vec3(0.24, 0.15, 0.08));
+    } else if (points[i][1] > 0.11) {
       //white
       colors.push(vec3(1.0, 1.0, 1.0));
     } else {
-      colors.push(vec3(0.0, 1.0, 0.0));
+      colors.push(vec3(0.14, 0.56, 0.31));
     }
   }
 
@@ -243,6 +247,11 @@ function render() {
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
-
-  gl.drawArrays(gl.TRIANGLES, 0, points.length);
+  if (drawmodes[drawmode_idx] === "t") {
+    gl.drawArrays(gl.TRIANGLES, 0, points.length);
+  } else if (drawmodes[drawmode_idx] === "p") {
+    gl.drawArrays(gl.POINTS, 0, points.length);
+  } else {
+    gl.drawArrays(gl.LINE_STRIP, 0, points.length);
+  }
 }
