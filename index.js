@@ -1,6 +1,8 @@
 "use strict";
 
 let gl; // WebGL "context"
+let program;
+
 let vBuffer;
 let cBuffer;
 let points;
@@ -8,6 +10,9 @@ let canvas;
 
 var xmin = 0;
 var zmin = 0;
+
+var xmax;
+var zmax;
 
 var near = 0.3;
 var far = 3.0;
@@ -167,13 +172,13 @@ window.onload = function init() {
   gl.clearColor(0.55686, 0.70196, 0.81961, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
-  var xmax = canvas.width;
-  var zmax = canvas.height;
+  xmax = canvas.width;
+  zmax = canvas.height;
 
   eye = vec3(1.0,0.5,1.0);
 
   //  Load shaders and initialize attribute buffers
-  let program = initShaders(gl, "vertex-shader", "fragment-shader");
+  program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
   // transformMatrixUniform = gl.getUniformLocation(program, "uTransformMatrix");
 
@@ -181,10 +186,10 @@ window.onload = function init() {
   points = get_patch(0, canvas.width, 0, canvas.height);
 
   for (let i = 0; i < points.length; i++) {
-    let y = getHeight(points[i][0], points[i][2]);
-    points[i][1] = map_point(0, canvas.height, 0, 1, y);
-    points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
-    points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
+    points[i][1] = getHeight(points[i][0], points[i][2]);
+    // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+    // points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
+    // points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
   }
 
   // Associate out shader variables with our data buffer
@@ -223,10 +228,10 @@ window.onload = function init() {
         xmax = xmax - 2;
         points = get_patch(xmin, xmax, zmin, zmax);
         for (let i = 0; i < points.length; i++) {
-          let y = getHeight(points[i][0], points[i][2]);
-          points[i][1] = map_point(0, canvas.height, 0, 1, y);
-          points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+          points[i][1] = getHeight(points[i][0], points[i][2]);
+          // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+          // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+          // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
         }
         render();
       }
@@ -237,10 +242,10 @@ window.onload = function init() {
         xmax = xmax + 2;
         points = get_patch(xmin, xmax, zmin, zmax);
         for (let i = 0; i < points.length; i++) {
-          let y = getHeight(points[i][0], points[i][2]);
-          points[i][1] = map_point(0, canvas.height, 0, 1, y);
-          points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+          points[i][1] = getHeight(points[i][0], points[i][2]);
+          // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+          // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+          // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
         }
         render();
       }
@@ -281,21 +286,21 @@ window.onload = function init() {
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  let colors = [];
-  for (let i = 0; i < points.length; i++) {
-    if (points[i][1] < -0.05) {
-      //blue
-      colors.push(vec3(0.18039, 0.22353, 0.55686));
-    } else if (0.0 < points[i][1] && points[i][1] < 0.06) {
-      //brown
-      colors.push(vec3(0.24, 0.15, 0.08));
-    } else if (points[i][1] > 0.13) {
-      //white
-      colors.push(vec3(1.0, 1.0, 1.0));
-    } else {
-      colors.push(vec3(0.14, 0.56, 0.31));
-    }
-  }
+  // let colors = [];
+  // for (let i = 0; i < points.length; i++) {
+  //   if (points[i][1] < -0.05) {
+  //     //blue
+  //     colors.push(vec3(0.18039, 0.22353, 0.55686));
+  //   } else if (0.0 < points[i][1] && points[i][1] < 0.06) {
+  //     //brown
+  //     colors.push(vec3(0.24, 0.15, 0.08));
+  //   } else if (points[i][1] > 0.13) {
+  //     //white
+  //     colors.push(vec3(1.0, 1.0, 1.0));
+  //   } else {
+  //     colors.push(vec3(0.14, 0.56, 0.31));
+  //   }
+  // }
 
   // eye = vec3(
   //   radius * Math.sin(theta) * Math.cos(phi),
@@ -303,10 +308,23 @@ function render() {
   //   radius * Math.cos(theta)
   // );
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+  // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+  // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+
+  let xmin_loc = gl.getUniformLocation( program, "xmin" );
+  gl.uniform1i( xmin_loc, xmin );
+  let xmax_loc = gl.getUniformLocation( program, "xmax" );
+  gl.uniform1i( xmax_loc, xmax );
+  
+  let zmin_loc = gl.getUniformLocation( program, "zmin" );
+  gl.uniform1i( zmin_loc, zmin );
+  let zmax_loc = gl.getUniformLocation( program, "zmax" );
+  gl.uniform1i( zmax_loc, zmax );
+
+  let ymax_loc = gl.getUniformLocation( program, "ymax" );
+  gl.uniform1i( ymax_loc, canvas.height );
 
   modelViewMatrix = lookAt(eye, at, up);
   var left = -1.0;
@@ -315,7 +333,7 @@ function render() {
   var bottom = -1.0;
   projectionMatrix = perspective(fovy, aspect, near, far);
   // projectionMatrix = ortho(left, right, bottom, ytop, near, far);
-
+  console.log(points)
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
   if (drawmodes[drawmode_idx] === "t") {
