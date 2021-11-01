@@ -228,9 +228,6 @@ window.onload = function init() {
           points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
           points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
         }
-
-        modelViewMatrix = lookAt(eye, at, up);
-        console.log(points);
         render();
       }
       else if ((event.shiftkey && event.key == 2) || event.key == 2) {
@@ -250,7 +247,6 @@ window.onload = function init() {
 
       else if ((event.shiftkey && event.key == 3) || event.key == 3) {
         //vary top
-        // eye = vec3(1.0, 1.0, 1.0);
         if (eye[1]+0.05<1){
         eye= vec3(eye[0],(eye[1]+0.05),eye[2])}
         render();
@@ -260,15 +256,6 @@ window.onload = function init() {
         //vary bottom
         if (eye[1]-0.05>0){
           eye= vec3(eye[0],(eye[1]-0.05),eye[2])}
-        // zmin = zmin + 5;
-        // zmax = zmax + 5;
-        // points = get_patch(xmin, xmax, zmin, zmax);
-        // for (let i = 0; i < points.length; i++) {
-        //   let y = getHeight(points[i][0], points[i][2]);
-        //   points[i][1] = map_point(0, canvas.height, 0, 1, y);
-        //   points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-        //   points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
-        // }
         render();
       }
       else if ((event.shiftkey && event.key == 5) || event.key == 5) {
@@ -302,7 +289,7 @@ function render() {
     } else if (0.0 < points[i][1] && points[i][1] < 0.06) {
       //brown
       colors.push(vec3(0.24, 0.15, 0.08));
-    } else if (points[i][1] > 0.11) {
+    } else if (points[i][1] > 0.13) {
       //white
       colors.push(vec3(1.0, 1.0, 1.0));
     } else {
