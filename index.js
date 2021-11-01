@@ -170,6 +170,8 @@ window.onload = function init() {
   var xmax = canvas.width;
   var zmax = canvas.height;
 
+  eye = vec3(1.0,0.5,1.0);
+
   //  Load shaders and initialize attribute buffers
   let program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
@@ -209,26 +211,79 @@ window.onload = function init() {
     "keydown",
     (event) => {
       if (event.key == "V" || event.key == "v") {
+        // toggle draw modes between triangles, points and mesh
         drawmode_idx++;
         if (drawmode_idx > 2) {
           drawmode_idx = 0;
         }
         render();
       } else if ((event.shiftkey && event.key == 1) || event.key == 1) {
-        xmin = xmin - 5;
-        xmax = xmax - 5;
+        //vary left
+        xmin = xmin - 2;
+        xmax = xmax - 2;
         points = get_patch(xmin, xmax, zmin, zmax);
         for (let i = 0; i < points.length; i++) {
           let y = getHeight(points[i][0], points[i][2]);
           points[i][1] = map_point(0, canvas.height, 0, 1, y);
           points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
+          points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
         }
 
         modelViewMatrix = lookAt(eye, at, up);
         console.log(points);
         render();
       }
+      else if ((event.shiftkey && event.key == 2) || event.key == 2) {
+
+        //vary right
+        xmin = xmin + 2;
+        xmax = xmax + 2;
+        points = get_patch(xmin, xmax, zmin, zmax);
+        for (let i = 0; i < points.length; i++) {
+          let y = getHeight(points[i][0], points[i][2]);
+          points[i][1] = map_point(0, canvas.height, 0, 1, y);
+          points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+          points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        }
+        render();
+      }
+
+      else if ((event.shiftkey && event.key == 3) || event.key == 3) {
+        //vary top
+        // eye = vec3(1.0, 1.0, 1.0);
+        if (eye[1]+0.05<1){
+        eye= vec3(eye[0],(eye[1]+0.05),eye[2])}
+        render();
+      }
+
+      else if ((event.shiftkey && event.key == 4) || event.key == 4) {
+        //vary bottom
+        if (eye[1]-0.05>0){
+          eye= vec3(eye[0],(eye[1]-0.05),eye[2])}
+        // zmin = zmin + 5;
+        // zmax = zmax + 5;
+        // points = get_patch(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   let y = getHeight(points[i][0], points[i][2]);
+        //   points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
+        render();
+      }
+      else if ((event.shiftkey && event.key == 5) || event.key == 5) {
+        //vary near
+        near-=0.05;
+        render();
+        
+      }
+
+      else if ((event.shiftkey && event.key == 6) || event.key == 6) {
+        //vary near
+        far+=0.05;
+        render();  
+      }
+
     },
     false
   );
@@ -255,18 +310,17 @@ function render() {
     }
   }
 
-  eye = vec3(
-    radius * Math.sin(theta) * Math.cos(phi),
-    radius * Math.sin(theta) * Math.sin(phi),
-    radius * Math.cos(theta)
-  );
+  // eye = vec3(
+  //   radius * Math.sin(theta) * Math.cos(phi),
+  //   radius * Math.sin(theta) * Math.sin(phi),
+  //   radius * Math.cos(theta)
+  // );
 
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
-  eye = vec3(1.0, 1.0, 1.0);
   modelViewMatrix = lookAt(eye, at, up);
   var left = -1.0;
   var right = 1.0;
