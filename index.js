@@ -6,6 +6,9 @@ let cBuffer;
 let points;
 let canvas;
 
+var xmin = 0;
+var zmin = 0;
+
 var near = 0.3;
 var far = 3.0;
 var radius = 4.0;
@@ -24,6 +27,9 @@ let up = vec3(0.0, 1.0, 0.0);
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
+
+var row_length;
+var col_length;
 
 function map_point(P, Q, A, B, X) {
   let alpha;
@@ -93,6 +99,8 @@ function get_patch(xmin, xmax, zmin, zmax) {
   var xzMax = vec2(xmax, zmax);
   var xDivs = 30;
   var zDivs = 30;
+  row_length = (xmax - xmin) * xDivs;
+  col_length = (zmax - zmin) * zDivs;
   var ret = [];
   if (xzMin.type != "vec2" || xzMax.type != "vec2") {
     throw "get_patch: either xzMin or xzMax is not a vec2";
@@ -101,7 +109,9 @@ function get_patch(xmin, xmax, zmin, zmax) {
   var dim = subtract(xzMax, xzMin);
   var dx = dim[0] / xDivs;
   var dz = dim[1] / zDivs;
-
+  console.log(xmin);
+  console.log(xzMin[0], xzMax[0]);
+  console.log(xzMin[1], xzMax[1]);
   for (var x = xzMin[0]; x < xzMax[0]; x += dx) {
     for (var z = xzMin[1]; z < xzMax[1]; z += dz) {
       //Triangle 1
@@ -157,6 +167,9 @@ window.onload = function init() {
   gl.clearColor(0.55686, 0.70196, 0.81961, 1.0);
   gl.enable(gl.DEPTH_TEST);
 
+  var xmax = canvas.width;
+  var zmax = canvas.height;
+
   //  Load shaders and initialize attribute buffers
   let program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
@@ -201,6 +214,20 @@ window.onload = function init() {
           drawmode_idx = 0;
         }
         render();
+      } else if ((event.shiftkey && event.key == 1) || event.key == 1) {
+        xmin = xmin - 5;
+        xmax = xmax - 5;
+        points = get_patch(xmin, xmax, zmin, zmax);
+        for (let i = 0; i < points.length; i++) {
+          let y = getHeight(points[i][0], points[i][2]);
+          points[i][1] = map_point(0, canvas.height, 0, 1, y);
+          points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+          points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
+        }
+
+        modelViewMatrix = lookAt(eye, at, up);
+        console.log(points);
+        render();
       }
     },
     false
@@ -211,6 +238,7 @@ window.onload = function init() {
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
+
   let colors = [];
   for (let i = 0; i < points.length; i++) {
     if (points[i][1] < -0.05) {
@@ -235,6 +263,8 @@ function render() {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
   eye = vec3(1.0, 1.0, 1.0);
   modelViewMatrix = lookAt(eye, at, up);
@@ -252,6 +282,12 @@ function render() {
   } else if (drawmodes[drawmode_idx] === "p") {
     gl.drawArrays(gl.POINTS, 0, points.length);
   } else {
+    // for (let i = 0; i < col_length; i++) {
+    //   gl.drawArrays(gl.LINE_STRIP, i * row_length,  row_length);
+    //   console.log(row_length);
     gl.drawArrays(gl.LINE_STRIP, 0, points.length);
   }
+  //   console.log(col_length);
+  // }
+  // window.requestAnimationFrame(render);
 }
