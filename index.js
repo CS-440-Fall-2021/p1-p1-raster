@@ -14,6 +14,7 @@ var zmin = 0;
 var xmax;
 var zmax;
 
+
 var near = 0.3;
 var far = 3.0;
 var radius = 4.0;
@@ -158,6 +159,26 @@ function clamp(x, min, max) {
   return Math.min(max, Math.max(min, x));
 }
 
+function move_in_axis(axis, direction, distance)
+{
+  if (axis == "z")
+  {
+    zmax += (direction * distance);
+    zmin += (direction * distance);
+  }
+  else if (axis == "x")
+  {
+    xmax += (direction * distance);
+    xmin += (direction * distance);
+  }
+
+  let points = get_patch(xmin, xmax, zmin, zmax);
+
+  for (let i = 0; i < points.length; i++)
+      points[i][1] = getHeight(points[i][0], points[i][2]);
+
+  return points;
+}
 //--------------------------------------------------------------------------------------------------------------------------
 
 let transformMatrixUniform;
@@ -175,7 +196,7 @@ window.onload = function init() {
   xmax = canvas.width;
   zmax = canvas.height;
 
-  eye = vec3(1.0,0.5,1.0);
+  eye = vec3(0.0,0.5,1.0);
 
   //  Load shaders and initialize attribute buffers
   program = initShaders(gl, "vertex-shader", "fragment-shader");
@@ -183,14 +204,16 @@ window.onload = function init() {
   // transformMatrixUniform = gl.getUniformLocation(program, "uTransformMatrix");
 
   // get_patch(xmin, xmax, zmin, zmax)
-  points = get_patch(0, canvas.width, 0, canvas.height);
+  // points = get_patch(0, canvas.width, 0, canvas.height);
+  
+  points = move_in_axis("", 0, 0);
 
-  for (let i = 0; i < points.length; i++) {
-    points[i][1] = getHeight(points[i][0], points[i][2]);
+  // for (let i = 0; i < points.length; i++) {
+    // points[i][1] = getHeight(points[i][0], points[i][2]);
     // points[i][1] = map_point(0, canvas.height, 0, 1, y);
     // points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
     // points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
-  }
+  // }
 
   // Associate out shader variables with our data buffer
   vBuffer = gl.createBuffer();
@@ -224,29 +247,31 @@ window.onload = function init() {
         render();
       } else if ((event.shiftkey && event.key == 1) || event.key == 1) {
         //vary left
-        xmin = xmin - 2;
-        xmax = xmax - 2;
-        points = get_patch(xmin, xmax, zmin, zmax);
-        for (let i = 0; i < points.length; i++) {
-          points[i][1] = getHeight(points[i][0], points[i][2]);
-          // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-          // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
-        }
+        points = move_in_axis("x", -1, 2);
+        // xmin = xmin - 2;
+        // xmax = xmax - 2;
+        // points = get_patch(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   points[i][1] = getHeight(points[i][0], points[i][2]);
+        //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
         render();
       }
       else if ((event.shiftkey && event.key == 2) || event.key == 2) {
 
         //vary right
-        xmin = xmin + 2;
-        xmax = xmax + 2;
-        points = get_patch(xmin, xmax, zmin, zmax);
-        for (let i = 0; i < points.length; i++) {
-          points[i][1] = getHeight(points[i][0], points[i][2]);
-          // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-          // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
-        }
+        points = move_in_axis("x", 1, 2);
+        // xmin = xmin + 2;
+        // xmax = xmax + 2;
+        // points = get_patch(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   points[i][1] = getHeight(points[i][0], points[i][2]);
+        //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
         render();
       }
 
@@ -263,24 +288,54 @@ window.onload = function init() {
           eye= vec3(eye[0],(eye[1]-0.05),eye[2])}
         render();
       }
+      // else if ((event.shiftkey && event.key == 5) || event.key == 5) {
+      //   //vary near
+      //   near-=0.05;
+      //   render();
+        
+      // }
+
+      // else if ((event.shiftkey && event.key == 6) || event.key == 6) {
+      //   //vary near
+      //   far+=0.05;
+      //   render();  
+      // }
       else if ((event.shiftkey && event.key == 5) || event.key == 5) {
         //vary near
-        near-=0.05;
+        points = move_in_axis("z", -1, 2);
+        // zmin = zmin + 2;
+        // zmax = zmax + 2;
+        // points = get_patch(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   points[i][1] = getHeight(points[i][0], points[i][2]);
+        //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
         render();
         
       }
 
       else if ((event.shiftkey && event.key == 6) || event.key == 6) {
-        //vary near
-        far+=0.05;
+        //vary far
+        points = move_in_axis("z", 1, 2);
+        // zmin = zmin - 2;
+        // zmax = zmax - 2;
+        // points = get_patch(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   points[i][1] = getHeight(points[i][0], points[i][2]);
+        //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
         render();  
       }
 
     },
     false
   );
-
   render();
+  // window.requestAnimationFrame(render);
 };
 
 function render() {
@@ -310,6 +365,9 @@ function render() {
 
   // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+
+  // points = move_in_axis("z", 1, 1);
+
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
