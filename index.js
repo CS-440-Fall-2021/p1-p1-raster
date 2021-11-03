@@ -167,9 +167,11 @@ function get_patch2(xmin, xmax, zmin, zmax) {
   var dim = subtract(xzMax, xzMin);
   var dx = dim[0] / xDivs;
   var dz = dim[1] / zDivs;
-  let xoff = 0;
+  // let xoff = 0;
+  let xoff = xmin/10;
   for (var x = xzMin[0]; x < xzMax[0]; x += dx) {
-    let zoff = 0;
+    // let zoff = 0;
+    let zoff = zmin/10;
     for (var z = xzMin[1]; z < xzMax[1]; z += dz) {
       //Triangle 1
       //  x,z
@@ -229,7 +231,7 @@ window.onload = function init() {
   xmax = canvas.width;
   zmax = canvas.height;
 
-  eye = vec3(1.0, 0.5, 1.0);
+  eye = vec3(1, 0.5, 1.0);
 
   //  Load shaders and initialize attribute buffers
   program = initShaders(gl, "vertex-shader", "fragment-shader");
@@ -268,12 +270,12 @@ window.onload = function init() {
 
   // ------------------------
 
-  for (let i = 0; i < points.length; i++) {
-    // points[i][1] = getHeight(points[i][0], points[i][2]);
-    // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-    // points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
-    // points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
-  }
+  // for (let i = 0; i < points.length; i++) {
+  //   // points[i][1] = getHeight(points[i][0], points[i][2]);
+  //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+  //   // points[i][0] = map_point(0, canvas.width, -1, 1, points[i][0]);
+  //   // points[i][2] = map_point(0, canvas.width, -1, 1, points[i][2]);
+  // }
 
   // Associate out shader variables with our data buffer
   vBuffer = gl.createBuffer();
@@ -304,31 +306,31 @@ window.onload = function init() {
         if (drawmode_idx > 2) {
           drawmode_idx = 0;
         }
-        render();
+        // render();
       } else if ((event.shiftkey && event.key == 1) || event.key == 1) {
         //vary left
         xmin = xmin - 2;
         xmax = xmax - 2;
-        points = get_patch(xmin, xmax, zmin, zmax);
-        for (let i = 0; i < points.length; i++) {
-          points[i][1] = getHeight(points[i][0], points[i][2]);
-          // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-          // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
-        }
-        render();
+        points = get_patch2(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   points[i][1] = getHeight(points[i][0], points[i][2]);
+        //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
+        // render();
       } else if ((event.shiftkey && event.key == 2) || event.key == 2) {
         //vary right
         xmin = xmin + 2;
         xmax = xmax + 2;
-        points = get_patch(xmin, xmax, zmin, zmax);
-        for (let i = 0; i < points.length; i++) {
-          points[i][1] = getHeight(points[i][0], points[i][2]);
-          // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-          // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-          // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
-        }
-        render();
+        points = get_patch2(xmin, xmax, zmin, zmax);
+        // for (let i = 0; i < points.length; i++) {
+        //   points[i][1] = getHeight(points[i][0], points[i][2]);
+        //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
+        //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
+        //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+        // }
+        // render();
       } else if ((event.shiftkey && event.key == 3) || event.key == 3) {
         //vary top
         if (eye[1] + 0.05 < 1) {
@@ -340,21 +342,35 @@ window.onload = function init() {
         if (eye[1] - 0.05 > 0) {
           eye = vec3(eye[0], eye[1] - 0.05, eye[2]);
         }
-        render();
+        // render();
+      // } else if ((event.shiftkey && event.key == 5) || event.key == 5) {
+      //   //vary near
+      //   near -= 0.05;
+      //   render();
+      // } else if ((event.shiftkey && event.key == 6) || event.key == 6) {
+      //   //vary near
+      //   far += 0.05;
+      //   render();
+      // }
       } else if ((event.shiftkey && event.key == 5) || event.key == 5) {
         //vary near
-        near -= 0.05;
-        render();
+        zmin = zmin + 2;
+        zmax = zmax + 2;
+        points = get_patch2(xmin, xmax, zmin, zmax);
+        // render();
       } else if ((event.shiftkey && event.key == 6) || event.key == 6) {
         //vary near
-        far += 0.05;
-        render();
+        zmin = zmin - 2;
+        zmax = zmax - 2;
+        points = get_patch2(xmin, xmax, zmin, zmax);
+        // render();
       }
     },
     false
   );
 
-  render();
+  // render();
+  window.requestAnimationFrame(render);
 };
 
 function render() {
@@ -384,6 +400,14 @@ function render() {
 
   // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+
+  zmin = zmin - 1;
+  zmax = zmax - 1;
+
+  xmin = xmin - 1;
+  xmax = xmax - 1;
+  points = get_patch2(xmin, xmax, zmin, zmax);
+
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
 
@@ -407,7 +431,7 @@ function render() {
   var bottom = -1.0;
   projectionMatrix = perspective(fovy, aspect, near, far);
   // projectionMatrix = ortho(left, right, bottom, ytop, near, far);
-  console.log(points);
+  // console.log(points);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
   if (drawmodes[drawmode_idx] === "t") {
@@ -422,7 +446,8 @@ function render() {
   }
   //   console.log(col_length);
   // }
-  // window.requestAnimationFrame(render);
+
+  window.requestAnimationFrame(render);
 }
 
 // ---------------------
