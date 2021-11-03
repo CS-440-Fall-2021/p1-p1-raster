@@ -41,21 +41,21 @@
 
         void main()
         {
-            float c = cos(1.2);                         
-            float s = sin(1.2);
-            mat3 rotation = mat3(c,  0,  s,               
-            0,  1,  0,               
-            -s, 0,  c);
+            float c = cos(1.0);                         
+            float s = sin(1.0);
+            mat3 rotation = mat3(1,  0,  0,
+            0,  c,  -s,
+            0, s,  c); 
             
             
 
             vec4 vector_pos = vec4(map_vertex(vPosition[0], float(xmin), float(xmax), -1.0, 1.0), 
-                            (map_vertex(vPosition[1], 0.0, float(ymax), 0.0, 1.0)), 
+                            (map_vertex(vPosition[1], 0.0, float(ymax), 0.0, 0.5)), 
                             map_vertex(vPosition[2], float(zmin), float(zmax), -1.0, 1.0), 
                             vPosition[3]);
             
             gl_Position = projectionMatrix*modelViewMatrix*vector_pos; // vertex position in CAMERA COORDINATES
-            //gl_Position = vPosition; // vertex position in CAMERA COORDINATES
+            //gl_Position = vec4(vector_pos.xyz * rotation, 1); // vertex position in CAMERA COORDINATES
 
             gl_PointSize = 2.0;
 
@@ -92,7 +92,8 @@
 
     <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/initShadersES6.js"></script>
     <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/MVES6.js"></script>
-
+    <script src="p5.js"></script>
+    <script type="text/javascript" src="perlin.js"></script>
     <script type="text/javascript" src="index.js"></script>
 </head>
 
