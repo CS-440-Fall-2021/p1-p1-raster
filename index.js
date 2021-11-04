@@ -336,7 +336,7 @@ window.onload = function init() {
         if (eye[1] + 0.05 < 1) {
           eye = vec3(eye[0], eye[1] + 0.05, eye[2]);
         }
-        render();
+        // render();
       } else if ((event.shiftkey && event.key == 4) || event.key == 4) {
         //vary bottom
         if (eye[1] - 0.05 > 0) {

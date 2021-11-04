@@ -61,13 +61,13 @@
 
             //vtxColor = vec4(vColor, 1.0);
 
-            if (vector_pos[1] < -0.05) {
+            if (vector_pos[1] < 0.00) {
                 //blue
                 vtxColor = vec4(0.18039, 0.22353, 0.55686, 1);
               } else if (0.0 < vector_pos[1] && vector_pos[1] < 0.06) {
                 //brown
                 vtxColor = vec4(0.24, 0.15, 0.08, 1);
-              } else if (vector_pos[1] > 0.13) {
+              } else if (vector_pos[1] > 0.18) {
                 //white
                 vtxColor = vec4(1.0, 1.0, 1.0, 1);
               } else {
