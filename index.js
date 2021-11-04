@@ -373,7 +373,7 @@ window.onload = function init() {
   window.requestAnimationFrame(render);
 };
 
-function render() {
+function render(timestamp) {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // let colors = [];
