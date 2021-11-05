@@ -127,6 +127,8 @@ window.onload = function init() {
   document.addEventListener("keydown", handleKeyDown);
 
   // render();
+  window.cancelAnimationFrame(anim);
+
   window.requestAnimationFrame(render);
 };
 
@@ -181,15 +183,8 @@ function render(timestamp) {
   let ymax_loc = gl.getUniformLocation(program, "ymax");
   gl.uniform1i(ymax_loc, canvas.height);
 
-  rotMat = rotate(1.5708, [1, 0, 0]);
-  // vpMatrix.rotate(pitchAngle, 1, 0, 0);
-
-  // vpMatrix = mult(rotMat, vpMatrix);
   modelViewMatrix = lookAt(eye, at, up);
-  var left = -1.0;
-  var right = 1.0;
-  var ytop = 1.0;
-  var bottom = -1.0;
+
   projectionMatrix = perspective(fovy, aspect, near, far);
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));

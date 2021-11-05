@@ -70,5 +70,5 @@ function handleKeyDown(event) {
     //   render();
   }
   window.cancelAnimationFrame(anim);
-  render();
+  anim = window.requestAnimationFrame(render);
 }
