@@ -17,8 +17,8 @@ var xmax;
 var zmax;
 
 let escape=false;
-var near = 0.3;
-var far = 3.0;
+// var near = 0.3;
+// var far = 3.0;
 var radius = 4.0;
 var theta = 0.0;
 var phi = 0.0;
@@ -46,6 +46,13 @@ let eye = vec3(300, 300, 0.0);
 let at = vec3(0.0, -300, 600);
 at = add(eye, at);
 let up = vec3(0.0, 1.0, 0.0);
+
+let left = -1.0;
+let right = 1.0;
+let bottom = -1.0;
+let top_ = 1.0;
+let near = 1.0;
+let far = -1.0;
 
 
 var drawmodes = ["t", "p", "l"];
@@ -184,8 +191,8 @@ function render(timestamp) {
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
   
   if (flag !=1){
-    zmin = zmin - 1;
-    zmax = zmax - 1;
+    zmin = zmin + 1;
+    zmax = zmax + 1;
 
     // xmin = xmin - 1;
     // xmax = xmax - 1;
@@ -217,7 +224,7 @@ function render(timestamp) {
 
   // projectionMatrix = perspective(fovy, aspect, near, far);
   // frustum(left, right, bottom, top, near, far);
-  projectionMatrix = frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
+  projectionMatrix = frustum(left, right, bottom, top_, near, far);
 
   projectionMatrix = mult(projectionMatrix, modelViewMatrix);
 
