@@ -5,6 +5,10 @@ function get_patch2(xmin, xmax, zmin, zmax) {
     //     points.push(vec4(i, Math.sin(i + j), j, 1));
     //   }
     // }
+
+    var xDiff = 0 - xmin;
+    var zDiff = 0 - zmin;
+
     var xzMin = vec2(xmin, zmin);
     var xzMax = vec2(xmax, zmax);
     var xDivs = 100;
@@ -27,9 +31,9 @@ function get_patch2(xmin, xmax, zmin, zmax) {
         //   |        \
         //   |__________\
         // x,z+dz      x+dx,z+dz
-        ret.push(vec4(x, getHeight(xoff, zoff), z, 1));
-        ret.push(vec4(x, getHeight(xoff, zoff + 0.1), z + dz, 1));
-        ret.push(vec4(x + dx, getHeight(xoff + 0.1, zoff + 0.1), z + dz, 1));
+        ret.push(vec4(x + xDiff, getHeight(xoff, zoff), z+ zDiff, 1));
+        ret.push(vec4(x + xDiff, getHeight(xoff, zoff + 0.1), z + zDiff+ dz, 1));
+        ret.push(vec4(x + xDiff + dx, getHeight(xoff + 0.1, zoff + 0.1), z+ zDiff + dz, 1));
   
         //Triangle 2
         //  x,z         x+dx,z
@@ -40,9 +44,9 @@ function get_patch2(xmin, xmax, zmin, zmax) {
         //            \  |
         //              \|
         //           x+dx,z+dz
-        ret.push(vec4(x, getHeight(xoff, zoff), z, 1));
-        ret.push(vec4(x + dx, getHeight(xoff + 0.1, zoff + 0.1), z + dz, 1));
-        ret.push(vec4(x + dx, getHeight(xoff + 0.1, zoff), z, 1));
+        ret.push(vec4(x+ xDiff, getHeight(xoff, zoff), z+ zDiff, 1));
+        ret.push(vec4(x + xDiff+ dx, getHeight(xoff + 0.1, zoff + 0.1), z+ zDiff + dz, 1));
+        ret.push(vec4(x + xDiff+ dx, getHeight(xoff + 0.1, zoff), z+ zDiff, 1));
         zoff += 0.1;
       }
       xoff += 0.1;
@@ -202,3 +206,39 @@ function TrianglesToWireframe(vertices) {
     //return the return array
     return points;
   }
+
+  function frustum(left, right, bottom, top, near, far) {
+
+    if (left == right) { throw "frustum(): left and right are equal";}
+   
+    if (bottom == top) { throw "frustum(): bottom and top are equal";}
+   
+    if (near == far) { throw "frustum(): near and far are equal";}
+   
+    let w = right - left;
+   
+    let h = top - bottom;
+   
+    let d = far - near;
+   
+    let result = mat4();
+   
+    result[0][0] = 2.0 * near / w;
+   
+    result[1][1] = 2.0 * near / h;
+   
+    result[2][2] = -(far + near) / d;
+   
+    result[0][2] = (right + left) / w;
+   
+    result[1][2] = (top + bottom) / h;
+   
+    result[2][3] = -2 * far * near / d;
+   
+    result[3][2] = -1;
+   
+    result[3][3] = 0.0;
+   
+    return result;
+   
+}

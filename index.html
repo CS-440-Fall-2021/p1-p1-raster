@@ -55,7 +55,8 @@
                             map_vertex(vPosition[2], float(zmin), float(zmax), -1.0, 1.0), 
                             vPosition[3]);
             
-            gl_Position = projectionMatrix*modelViewMatrix*vector_pos; // vertex position in CAMERA COORDINATES
+            //gl_Position = projectionMatrix*modelViewMatrix*vPosition; // vertex position in CAMERA COORDINATES -->
+            gl_Position = projectionMatrix * vPosition;
             //gl_Position = vec4(vector_pos.xyz * rotation, 1); // vertex position in CAMERA COORDINATES
 
             gl_PointSize = 2.0;

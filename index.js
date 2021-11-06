@@ -29,9 +29,24 @@ var aspect; // Viewport aspect ratio
 
 var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
-var eye;
-let at = vec3(0.0, 0.0, 0.0);
+// var eye = vec3(1, 0.5, 1.0);
+// let at = vec3(0.0, 0.0, 0.0);
+// let up = vec3(0.0, 1.0, 0.0);
+
+// let eye = vec3(0.0, 0.3, 1.0);
+// // let at_vector = vec3(0.0, -1.0, -1.0);
+// // let at = add(eye, at_vector);
+// let at = vec3(0.0, -0.2, -1.0);
+// at = add(eye, at);
+// let up = vec3(0.0, 1.0, 0.0);
+
+let eye = vec3(300, 300, 0.0);
+// let at_vector = vec3(0.0, -1.0, -1.0);
+// let at = add(eye, at_vector);
+let at = vec3(0.0, -300, 600);
+at = add(eye, at);
 let up = vec3(0.0, 1.0, 0.0);
+
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
@@ -57,12 +72,12 @@ window.onload = function init() {
   //  Configure WebGL
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.clearColor(0.55686, 0.70196, 0.81961, 1.0);
-  // gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.DEPTH_TEST);
 
   xmax = canvas.width;
   zmax = canvas.height;
 
-  eye = vec3(1, 0.5, 1.0);
+  // eye = vec3(1, 0.5, 1.0);
 
   //  Load shaders and initialize attribute buffers
   program = initShaders(gl, "vertex-shader", "fragment-shader");
@@ -141,8 +156,8 @@ else if (escape==true){
 };
 
 function render(timestamp) {
-  gl.clear(gl.COLOR_BUFFER_BIT);
-
+  // gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  
   // let colors = [];
   // for (let i = 0; i < points.length; i++) {
   //   if (points[i][1] < -0.05) {
@@ -167,17 +182,23 @@ function render(timestamp) {
 
   // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-if (flag !=1){
-  zmin = zmin - 1;
-  zmax = zmax - 1;
+  
+  if (flag !=1){
+    zmin = zmin - 1;
+    zmax = zmax - 1;
 
-  xmin = xmin - 1;
-  xmax = xmax - 1;}
+    // xmin = xmin - 1;
+    // xmax = xmax - 1;
+  }
+
   points = get_patch2(xmin, xmax, zmin, zmax);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  if (escape==false){
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);}
+
+  if (escape==false)
+  {
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+  }
 
   let xmin_loc = gl.getUniformLocation(program, "xmin");
   gl.uniform1i(xmin_loc, xmin);
@@ -194,9 +215,15 @@ if (flag !=1){
 
   modelViewMatrix = lookAt(eye, at, up);
 
-  projectionMatrix = perspective(fovy, aspect, near, far);
+  // projectionMatrix = perspective(fovy, aspect, near, far);
+  // frustum(left, right, bottom, top, near, far);
+  projectionMatrix = frustum(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0);
+
+  projectionMatrix = mult(projectionMatrix, modelViewMatrix);
+
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
+
   if (drawmodes[drawmode_idx] === "t") {
     gl.drawArrays(gl.TRIANGLES, 0, points.length);
   } else if (drawmodes[drawmode_idx] === "p") {
