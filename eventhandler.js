@@ -1,19 +1,26 @@
 let shiftPressed = false;
+
 function handleKeyDown(event) {
   if (event.key == "V" || event.key == "v") {
     // toggle draw modes between triangles, points and mesh
     drawmode_idx++;
     if (drawmode_idx > 2) {
       drawmode_idx = 0;
-    } else if (event.keyCode == 16) {
-      shiftPressed = true;
-      console.log("Shift Pressed");
     }
-  } else if ((shiftPressed && event.key == 1) || event.key == 1) {
-    //vary left
-    xmin = xmin - 2;
-    xmax = xmax - 2;
-    points = get_patch2(xmin, xmax, zmin, zmax);
+  } else if (event.keyCode == 16) {
+    shiftPressed = true;
+    console.log("Shift Pressed");
+  } else if (event.keyCode == 49) {
+    if (!shiftPressed) {
+      //vary left
+      xmin = xmin - 2;
+      xmax = xmax - 2;
+      points = get_patch2(xmin, xmax, zmin, zmax);
+    } else if (shiftPressed) {
+      xmin = xmin + 2;
+      xmax = xmax + 2;
+      points = get_patch2(xmin, xmax, zmin, zmax);
+    }
     // for (let i = 0; i < points.length; i++) {
     //   points[i][1] = getHeight(points[i][0], points[i][2]);
     //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
@@ -21,11 +28,17 @@ function handleKeyDown(event) {
     //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
     // }
     // render();
-  } else if ((shiftPressed && event.key == 2) || event.key == 2) {
+  } else if (event.keyCode == 50) {
     //vary right
-    xmin = xmin + 2;
-    xmax = xmax + 2;
-    points = get_patch2(xmin, xmax, zmin, zmax);
+    if (!shiftPressed) {
+      xmin = xmin + 2;
+      xmax = xmax + 2;
+      points = get_patch2(xmin, xmax, zmin, zmax);
+    } else if (shiftPressed) {
+      xmin = xmin - 2;
+      xmax = xmax - 2;
+      points = get_patch2(xmin, xmax, zmin, zmax);
+    }
     // for (let i = 0; i < points.length; i++) {
     //   points[i][1] = getHeight(points[i][0], points[i][2]);
     //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
@@ -33,10 +46,16 @@ function handleKeyDown(event) {
     //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
     // }
     // render();
-  } else if ((event.keyCode == 16 && event.key == 3) || event.key == 3) {
+  } else if (event.keyCode == 51) {
     //vary top
-    if (eye[1] + 0.02 < 1) {
-      eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
+    if (!shiftPressed) {
+      if (eye[1] + 0.02 < 1) {
+        eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
+      }
+    } else if (shiftPressed) {
+      if (eye[1] - 0.02 > 0.3) {
+        eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+      }
     }
     // if (flag == 1) {
     //   for (let i = 0; i < points.length; i++) {
@@ -63,10 +82,16 @@ function handleKeyDown(event) {
     //   }
     // }
     // render();
-  } else if ((event.keyCode == 16 && event.key == 4) || event.key == 4) {
+  } else if (event.keyCode == 52) {
     //vary bottom
-    if (eye[1] - 0.02 > 0.27) {
-      eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+    if (!shiftPressed) {
+      if (eye[1] - 0.02 > 0.27) {
+        eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+      }
+    } else if (shiftPressed) {
+      if (eye[1] + 0.02 < 1) {
+        eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
+      }
     }
     // for (let i = 0; i < points.length; i++) {
     //   let p = vec3(0, 0, 0);
@@ -100,18 +125,25 @@ function handleKeyDown(event) {
     //   far += 0.05;
     //   render();
     // }
-  } else if ((event.keyCode == 16 && event.key == 5) || event.key == 5) {
+  } else if (event.keyCode == 53) {
+    if (!shiftPressed) {
     //vary near
-    near += 0.1;
+    near += 0.1;}
+    else if(shiftPressed){
+      near -= 0.1;
+    }
     // zmin = zmin + 2;
     // zmax = zmax + 2;
     // points = get_patch2(xmin, xmax, zmin, zmax);
     // render();
-  } else if ((event.keyCode == 16 && event.key == 6) || event.key == 6) {
+  } else if (event.keyCode == 54) {
     //vary far
-    // if (far > 0.2) {
+    if (!shiftPressed) {
     far += 0.1;
-    // }
+    }
+    else if (shiftPressed){
+      far -= 0.1;
+    }
     // zmin = zmin - 2;
     // zmax = zmax - 2;
     // points = get_patch2(xmin, xmax, zmin, zmax);
@@ -130,7 +162,16 @@ function handleKeyDown(event) {
     gl.clear(gl.COLOR_BUFFER_BIT);
     escape = true;
     gl.drawArrays(gl.TRIANGLES, 0, points.length); //Rendering the triangle
+  } else if (event.keyCode == 16) {
+    console.log("shift");
   }
   window.cancelAnimationFrame(anim);
   anim = window.requestAnimationFrame(render);
+}
+
+function handleKeyUp(event) {
+  if (event.keyCode == 16) {
+    shiftPressed = false;
+    console.log("Shift unPressed");
+  }
 }

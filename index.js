@@ -128,6 +128,8 @@ window.onload = function init() {
 
   aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", handleKeyUp);
+
 
   // render();
   window.cancelAnimationFrame(anim);
