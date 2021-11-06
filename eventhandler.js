@@ -6,6 +6,8 @@ function handleKeyDown(event) {
     drawmode_idx++;
     if (drawmode_idx > 2) {
       drawmode_idx = 0;
+    } else if (event.key == "C" || event.key == "c") {
+      mode = 1;
     }
   } else if (event.keyCode == 16) {
     shiftPressed = true;
@@ -127,9 +129,9 @@ function handleKeyDown(event) {
     // }
   } else if (event.keyCode == 53) {
     if (!shiftPressed) {
-    //vary near
-    near += 0.1;}
-    else if(shiftPressed){
+      //vary near
+      near += 0.1;
+    } else if (shiftPressed) {
       near -= 0.1;
     }
     // zmin = zmin + 2;
@@ -139,9 +141,8 @@ function handleKeyDown(event) {
   } else if (event.keyCode == 54) {
     //vary far
     if (!shiftPressed) {
-    far += 0.1;
-    }
-    else if (shiftPressed){
+      far += 0.1;
+    } else if (shiftPressed) {
       far -= 0.1;
     }
     // zmin = zmin - 2;
