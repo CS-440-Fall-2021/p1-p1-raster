@@ -16,6 +16,7 @@ let flag=0;
 var xmax;
 var zmax;
 
+let escape=false;
 var near = 0.3;
 var far = 3.0;
 var radius = 4.0;
@@ -130,8 +131,11 @@ window.onload = function init() {
 
   // render();
   window.cancelAnimationFrame(anim);
-
-  window.requestAnimationFrame(render);
+if (escape==false)
+  {window.requestAnimationFrame(render);}
+else if (escape==true){
+  window.cancelAnimationFrame(anim);
+}
 };
 
 function render(timestamp) {
@@ -170,7 +174,8 @@ if (flag !=1){
   points = get_patch2(xmin, xmax, zmin, zmax);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+  if (escape==false){
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);}
 
   let xmin_loc = gl.getUniformLocation(program, "xmin");
   gl.uniform1i(xmin_loc, xmin);
