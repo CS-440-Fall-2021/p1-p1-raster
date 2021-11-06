@@ -11,6 +11,8 @@ let canvas;
 var xmin = 0;
 var zmin = 0;
 
+let flag=0;
+
 var xmax;
 var zmax;
 
@@ -159,12 +161,12 @@ function render(timestamp) {
 
   // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-
+if (flag !=1){
   zmin = zmin - 1;
   zmax = zmax - 1;
 
   xmin = xmin - 1;
-  xmax = xmax - 1;
+  xmax = xmax - 1;}
   points = get_patch2(xmin, xmax, zmin, zmax);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);

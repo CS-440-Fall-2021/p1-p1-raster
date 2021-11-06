@@ -32,14 +32,53 @@ function handleKeyDown(event) {
     // render();
   } else if ((event.shiftkey && event.key == 3) || event.key == 3) {
     //vary top
-    if (eye[1] + 0.05 < 1) {
-      eye = vec3(eye[0], eye[1] + 0.05, eye[2]);
+    if (eye[1] + 0.02 < 1) {
+      eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
     }
+if (flag==1)
+    {for (let i = 0; i < points.length; i++) {
+      let p= vec3(0,0,0);
+        p[1] = map_point(0, canvas.height, 0, 1, points[i][1]).toFixed(2);
+        p[0] = map_point(xmin, xmax, -1, 1, points[i][0]).toFixed(2);
+        p[2] = map_point(zmin, zmax, -1, 1, points[i][2]).toFixed(2);
+      if (eye ==p){
+        flag=1;
+        // break
+      }
+      if (Math.abs(eye[1].toFixed(2)-p[1])<0.05 && Math.abs(eye[2].toFixed(2)-p[2])<0.05 && Math.abs(eye[0].toFixed(2)-p[0])<0.05){
+        console.log(eye)
+        console.log(p)
+        flag=1;
+        break
+      }
+      else if (points.length-i==1){
+        flag=0;
+      }
+    }}
     // render();
   } else if ((event.shiftkey && event.key == 4) || event.key == 4) {
     //vary bottom
-    if (eye[1] - 0.05 > 0.3) {
-      eye = vec3(eye[0], eye[1] - 0.05, eye[2]);
+    if (eye[1] - 0.02 > 0.27) {
+      eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+    }
+    for (let i = 0; i < points.length; i++) {
+      let p= vec3(0,0,0);
+        p[1] = map_point(0, canvas.height, 0, 1, points[i][1]).toFixed(2);
+        p[0] = map_point(xmin, xmax, -1, 1, points[i][0]).toFixed(2);
+        p[2] = map_point(zmin, zmax, -1, 1, points[i][2]).toFixed(2);
+      if (eye ==p){
+        flag=1;
+        // break
+      }
+      if (Math.abs(eye[1].toFixed(2)-p[1])<0.05 && Math.abs(eye[2].toFixed(2)-p[2])<0.05 && Math.abs(eye[0].toFixed(2)-p[0])<0.05){
+        console.log(eye)
+        console.log(p)
+        flag=1;
+        break
+      }
+      else if (points.length-i==1){ 
+        flag=0;
+      }
     }
     // render();
     // } else if ((event.shiftkey && event.key == 5) || event.key == 5) {
