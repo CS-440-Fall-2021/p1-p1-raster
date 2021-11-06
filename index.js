@@ -11,12 +11,12 @@ let canvas;
 var xmin = 0;
 var zmin = 0;
 
-let flag=0;
+let flag = 0;
 
 var xmax;
 var zmax;
 
-let escape=false;
+let escape = false;
 // var near = 0.3;
 // var far = 3.0;
 var radius = 4.0;
@@ -40,20 +40,19 @@ var modelViewMatrixLoc, projectionMatrixLoc;
 // at = add(eye, at);
 // let up = vec3(0.0, 1.0, 0.0);
 
-let eye = vec3(300, 300, 0.0);
+let eye = vec3(300, 300, -300.0);
 // let at_vector = vec3(0.0, -1.0, -1.0);
 // let at = add(eye, at_vector);
-let at = vec3(0.0, -300, 600);
+let at = vec3(0.0, 200, 600);
 at = add(eye, at);
 let up = vec3(0.0, 1.0, 0.0);
 
-let left = -1.0;
-let right = 1.0;
+let left = -0.1;
+let right = 0.1;
 let bottom = -1.0;
 let top_ = 1.0;
 let near = 1.0;
 let far = -1.0;
-
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
@@ -152,19 +151,18 @@ window.onload = function init() {
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
 
-
   // render();
   window.cancelAnimationFrame(anim);
-if (escape==false)
-  {window.requestAnimationFrame(render);}
-else if (escape==true){
-  window.cancelAnimationFrame(anim);
-}
+  if (escape == false) {
+    window.requestAnimationFrame(render);
+  } else if (escape == true) {
+    window.cancelAnimationFrame(anim);
+  }
 };
 
 function render(timestamp) {
   // gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   // let colors = [];
   // for (let i = 0; i < points.length; i++) {
   //   if (points[i][1] < -0.05) {
@@ -189,8 +187,8 @@ function render(timestamp) {
 
   // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-  
-  if (flag !=1){
+
+  if (flag != 1) {
     zmin = zmin + 1;
     zmax = zmax + 1;
 
@@ -202,8 +200,7 @@ function render(timestamp) {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 
-  if (escape==false)
-  {
+  if (escape == false) {
     gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
   }
 

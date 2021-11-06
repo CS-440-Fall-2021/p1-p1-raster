@@ -49,12 +49,12 @@ function handleKeyDown(event) {
   } else if (event.keyCode == 51) {
     //vary top
     if (!shiftPressed) {
-      if (eye[1] + 0.02 < 1) {
-        eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
+      if (eye[1] + 20 < 600) {
+        eye = vec3(eye[0], eye[1] + 20, eye[2]);
       }
     } else if (shiftPressed) {
-      if (eye[1] - 0.02 > 0.3) {
-        eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+      if (eye[1] - 20 > 390) {
+        eye = vec3(eye[0], eye[1] - 20, eye[2]);
       }
     }
     // if (flag == 1) {
@@ -127,9 +127,9 @@ function handleKeyDown(event) {
     // }
   } else if (event.keyCode == 53) {
     if (!shiftPressed) {
-    //vary near
-    near += 0.1;}
-    else if(shiftPressed){
+      //vary near
+      near += 0.1;
+    } else if (shiftPressed) {
       near -= 0.1;
     }
     // zmin = zmin + 2;
@@ -139,9 +139,8 @@ function handleKeyDown(event) {
   } else if (event.keyCode == 54) {
     //vary far
     if (!shiftPressed) {
-    far += 0.1;
-    }
-    else if (shiftPressed){
+      far += 0.1;
+    } else if (shiftPressed) {
       far -= 0.1;
     }
     // zmin = zmin - 2;
