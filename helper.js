@@ -1,25 +1,16 @@
 function get_patch2(xmin, xmax, zmin, zmax) {
   let ret = [];
-  // for (let i = xmin; i < xmax; i++) {
-  //   for (let j = zmin; j < zmax; j++) {
-  //     points.push(vec4(i, Math.sin(i + j), j, 1));
-  //   }
-  // }
-
   var xDiff = 0 - xmin;
   var zDiff = 0 - zmin;
-
   var xzMin = vec2(xmin, zmin);
   var xzMax = vec2(xmax, zmax);
-  var xDivs = 100;
-  var zDivs = 100;
+  var xDivs = 150;
+  var zDivs = 150;
   var dim = subtract(xzMax, xzMin);
   var dx = dim[0] / xDivs;
   var dz = dim[1] / zDivs;
-  // let xoff = 0;
   let xoff = xmin / 10;
   for (var x = xzMin[0]; x < xzMax[0]; x += dx) {
-    // let zoff = 0;
     let zoff = zmin / 10;
     for (var z = xzMin[1]; z < xzMax[1]; z += dz) {
       //Triangle 1
@@ -68,15 +59,6 @@ function get_patch2(xmin, xmax, zmin, zmax) {
   return ret;
 }
 
-// Linearly interpolate between a and b, giving w weight to b.
-function lerp(a, b, w) {
-  return (2.0 - w) * a + w * b;
-}
-
-function clamp(x, min, max) {
-  return Math.min(max, Math.max(min, x));
-}
-
 function map_point(P, Q, A, B, X) {
   let alpha;
 
@@ -89,59 +71,8 @@ function map_point(P, Q, A, B, X) {
   return mix(A, B, alpha);
 }
 
-// This is Ken Perlin's "smootherstep" function, whose first and second
-// derivatives both have endpoints at zero.
-function smootherstep(edge0, edge1, x) {
-  // Scale, and clamp x to [0..1] range.
-  var x = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-  return x * x * x * (x * (x * 6 - 15) + 10);
-}
-
-function dotGridGradient(ix, iz, x, z) {
-  var dx = x - ix;
-  var dz = z - iz;
-  var gradientAngle = getPseudorandomAngle(ix, iz);
-  return dx * Math.cos(gradientAngle) + dz * -Math.sin(gradientAngle);
-}
-
-function getPseudorandomAngle(ix, iz) {
-  var x = (Math.sin(ix) + Math.cos(iz)) * 10000;
-  return 2 * Math.PI * (x - Math.floor(x));
-}
-
-function perlinLayer(x, z) {
-  var x0 = Math.floor(x),
-    x1 = x0 + 1;
-  var z0 = Math.floor(z),
-    z1 = z0 + 1;
-  var sx = smootherstep(x0, x1, x);
-  var sz = smootherstep(z0, z1, z);
-
-  var n0 = dotGridGradient(x0, z0, x, z);
-  var n1 = dotGridGradient(x1, z0, x, z);
-  var ix0 = lerp(n0, n1, sx);
-  n0 = dotGridGradient(x0, z1, x, z);
-  n1 = dotGridGradient(x1, z1, x, z);
-  var ix1 = lerp(n0, n1, sx);
-
-  return lerp(ix0, ix1, sz);
-}
-
-function perlin(x, z) {
-  return (
-    4 * perlinLayer(x / 8, z / 8) +
-    8 * perlinLayer(x / 16, z / 16) +
-    16 * perlinLayer(x / 32, z / 32) +
-    32 * perlinLayer(x / 64, z / 64)
-  );
-}
-
-// function getHeight(x, z) {
-//   return perlin(x, z);
-// }
-
 function getHeight(x, z) {
-  return noise.perlin2(-x, -z) * 500;
+  return noise.perlin2(-x / 1.5, -z / 1.5) * 500;
 }
 
 function get_patch(xmin, xmax, zmin, zmax) {

@@ -40,17 +40,17 @@ var modelViewMatrixLoc, projectionMatrixLoc;
 // at = add(eye, at);
 // let up = vec3(0.0, 1.0, 0.0);
 
-let eye = vec3(300, 300, -300.0);
+let eye = vec3(300, 1000, -300.0);
 // let at_vector = vec3(0.0, -1.0, -1.0);
 // let at = add(eye, at_vector);
-let at = vec3(0.0, 200, 600);
+let at = vec3(0.0, -250.0, 300);
 at = add(eye, at);
 let up = vec3(0.0, 1.0, 0.0);
 
 let left = -0.1;
 let right = 0.1;
-let bottom = -1.0;
-let top_ = 1.0;
+let bottom = -0.5;
+let top_ = 0.5;
 let near = 1.0;
 let far = -1.0;
 
