@@ -291,7 +291,7 @@ function render(timestamp) {
   
   // move_camera_pitch();
 
-  move_camera_yaw();
+  // move_camera_yaw();
 
   at = add(eye, at_vec);
   modelViewMatrix = lookAt(eye, at, up);
