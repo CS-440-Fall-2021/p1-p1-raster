@@ -3,6 +3,20 @@
 let gl; // WebGL "context"
 let program;
 
+let t = 0.0;
+let modeVal = 1.0;
+let lightPos = [1.0, 1.0, -1.0];
+let lightVec = new Float32Array(3);
+let ambientColor = [0.2, 0.5, 0.0];
+let diffuseColor = [0.8, 0.4, 0.0];
+let specularColor = [1.0, 1.0, 1.0];
+let clearColor = [0.0, 0.4, 0.7];
+let attenuation = 0.01;
+let shininess = 2.0;
+let kaVal = 1.0;
+let kdVal = 1.0;
+let ksVal = 1.0;
+
 let vBuffer;
 let cBuffer;
 let points;
@@ -27,8 +41,27 @@ var dr = (5.0 * Math.PI) / 180.0;
 var fovy = 45.0; // Field-of-view in Y direction angle (in degrees)
 var aspect; // Viewport aspect ratio
 
+var normalLoc = 0;
+var normalMatrixLoc = 0;
+
+var modeLoc = 0;
+var kaLoc = 0;
+var kdLoc = 0;
+var ksLoc = 0;
+var attenuationLoc = 0;
+var shininessLoc = 0;
+var lightPosLoc = 0;
+var lightVecLoc = 0;
+var ambientColorLoc = 0;
+var diffuseColorLoc = 0;
+var specularColorLoc = 0;
+
 var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
+
+var modelviewInv = new Float32Array(16);
+var normalmatrix = new Float32Array(16);
+
 // var eye = vec3(1, 0.5, 1.0);
 // let at = vec3(0.0, 0.0, 0.0);
 // let up = vec3(0.0, 1.0, 0.0);
@@ -56,6 +89,9 @@ let far = -1.0;
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
+
+var shadingmodes = [1.0, 2.0, 3.0];
+var shadingmode_idx = 0;
 
 var row_length;
 var col_length;
@@ -141,12 +177,34 @@ window.onload = function init() {
   cBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, 0, gl.STATIC_DRAW);
+
+  normalLoc = gl.getAttribLocation(program, "normal");
+  if (normalLoc != -1) {
+    // normal
+    var stride = (3 + 2 + 3) * Float32Array.BYTES_PER_ELEMENT;
+    var offset = 0 + (3 + 2) * Float32Array.BYTES_PER_ELEMENT;
+    gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, stride, offset);
+    gl.enableVertexAttribArray(normalLoc);
+  }
+
   // let colorLoc = gl.getAttribLocation(program, "vColor");
   // gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
   // gl.enableVertexAttribArray(colorLoc);
   modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
 
+  normalMatrixLoc = gl.getUniformLocation(program, "normalMat");
+  modeLoc = gl.getUniformLocation(program, "mode");
+  lightPosLoc = gl.getUniformLocation(program, "lightPos");
+  lightVecLoc = gl.getUniformLocation(program, "lightVec");
+  ambientColorLoc = gl.getUniformLocation(program, "ambientColor");
+  diffuseColorLoc = gl.getUniformLocation(program, "diffuseColor");
+  specularColorLoc = gl.getUniformLocation(program, "specularColor");
+  shininessLoc = gl.getUniformLocation(program, "shininessVal");
+  attenuationLoc = gl.getUniformLocation(program, "attenuationVal");
+  kaLoc = gl.getUniformLocation(program, "Ka");
+  kdLoc = gl.getUniformLocation(program, "Kd");
+  ksLoc = gl.getUniformLocation(program, "Ks");
   aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
@@ -204,6 +262,20 @@ function render(timestamp) {
     gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
   }
 
+  if (normalMatrixLoc != -1)
+    gl.uniformMatrix4fv(normalMatrixLoc, false, normalmatrix);
+  if (modeLoc != -1) gl.uniform1f(modeLoc, modeVal);
+  if (kaLoc != -1) gl.uniform1f(kaLoc, kaVal);
+  if (kdLoc != -1) gl.uniform1f(kdLoc, kdVal);
+  if (ksLoc != -1) gl.uniform1f(ksLoc, ksVal);
+  if (attenuationLoc != -1) gl.uniform1f(attenuationLoc, attenuation);
+  if (shininessLoc != -1) gl.uniform1f(shininessLoc, shininess);
+  if (lightPosLoc != -1) gl.uniform3fv(lightPosLoc, lightPos);
+  if (lightVecLoc != -1) gl.uniform3fv(lightVecLoc, lightVec);
+  if (ambientColorLoc != -1) gl.uniform3fv(ambientColorLoc, ambientColor);
+  if (diffuseColorLoc != -1) gl.uniform3fv(diffuseColorLoc, diffuseColor);
+  if (specularColorLoc != -1) gl.uniform3fv(specularColorLoc, specularColor);
+
   let xmin_loc = gl.getUniformLocation(program, "xmin");
   gl.uniform1i(xmin_loc, xmin);
   let xmax_loc = gl.getUniformLocation(program, "xmax");
@@ -223,7 +295,10 @@ function render(timestamp) {
   // frustum(left, right, bottom, top, near, far);
   projectionMatrix = frustum(left, right, bottom, top_, near, far);
 
-  projectionMatrix = mult(projectionMatrix, modelViewMatrix);
+  // projectionMatrix = mult(projectionMatrix, modelViewMatrix);`
+
+  mat4Invert(modelViewMatrix, modelviewInv);
+  mat4Transpose(modelviewInv, normalmatrix);
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));

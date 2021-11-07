@@ -7,6 +7,15 @@ function handleKeyDown(event) {
     if (drawmode_idx > 2) {
       drawmode_idx = 0;
     }
+  } else if (event.key == "C" || event.key == "c") {
+    shadingmode_idx++;
+    if (shadingmode_idx > 2) {
+      shadingmode_idx = 0;
+    }
+    modeVal = shadingmodes[shadingmode_idx];
+    console.log(modeVal);
+    //COMMENT OUT THE BELOW LINE
+    // mode=1;
   } else if (event.keyCode == 16) {
     shiftPressed = true;
     console.log("Shift Pressed");
