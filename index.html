@@ -9,8 +9,6 @@
         #gl-canvas {
             width: 50%;
             height: 50%;
-            /* display: block; */
-            /* background-color: black; */
         }
     </style>
 
@@ -33,16 +31,14 @@
         out vec3 normalInterp; 
         out vec3 vertPos; 
         uniform float mode; // Rendering mode 
-        //out int mode2;
-
 
 
         float map_vertex(float vertex_coord, float min, float max, float map_min, float map_max)
         {
             float alpha = (vertex_coord - min) / (max - min);
-            
             return (alpha * map_max) + ((1.0 - alpha) * map_min);
         }
+        
         vec3 getColor(vec3 position) { 
             if(position.y < 0.00)  {
                //blue
@@ -70,35 +66,39 @@
             mat3 rotation = mat3(1,  0,  0,
             0,  c,  -s,
             0, s,  c); 
+            
             vec4 vector_pos = vec4(map_vertex(vPosition[0], float(xmin), float(xmax), -1.0, 1.0), 
                             (map_vertex(vPosition[1], 0.0, float(ymax), 0.0, 0.5)), 
                             map_vertex(vPosition[2], float(zmin), float(zmax), -1.0, 1.0), 
                             vPosition[3]);
             if (mode==2.0)
             {
-            vertPos = vec3(vector_pos) * vector_pos.w; 
-            normalInterp = vec3(normalMat* vec4(normal, 0.0)); 
+                vec4 result=modelViewMatrix*vPosition;
+                vertPos = vec3(vPosition) / vPosition.w;
+                normalInterp = vec3(normalMat* vec4(normal, 0.0));
+                gl_Position = projectionMatrix*result; // vertex position in CAMERA COORDINATES
+                gl_PointSize = 2.0;
+                //vertPos = vec3(vector_pos) * vector_pos.w; 
             }
-            vec4 result=modelViewMatrix*vPosition;
-            gl_Position = projectionMatrix*result; // vertex position in CAMERA COORDINATES -->
-            //gl_Position = projectionMatrix * vPosition;
-            //gl_Position = vec4(vector_pos.xyz * rotation, 1); // vertex position in CAMERA COORDINATES
-            gl_PointSize = 2.0;
+            else if (mode == 1.0){
+                vec4 result=modelViewMatrix*vPosition;
+                gl_Position = projectionMatrix*result; // vertex position in CAMERA COORDINATES
+                gl_PointSize = 2.0;
 
-            //vtxColor = vec4(vColor, 1.0);
-
-            if (vector_pos[1] < 0.00) {
-                //blue
-                vtxColor = vec4(0.18039, 0.22353, 0.55686, 1);
-              } else if (0.0 < vector_pos[1] && vector_pos[1] < 0.06) {
-                //brown
-                vtxColor = vec4(0.24, 0.15, 0.08, 1);
-              } else if (vector_pos[1] > 0.18) {
-                //white
-                vtxColor = vec4(1.0, 1.0, 1.0, 1);
-              } else {
-                vtxColor = vec4(0.14, 0.56, 0.31, 1);
-              }
+                if (vPosition.y < 0.0) {
+                    //blue
+                    vtxColor = vec4(0.18039, 0.22353, 0.55686, 1);
+                } else if (0.0 < vPosition.y && vPosition.y < 100.0) {
+                    //green
+                    vtxColor = vec4(0.14, 0.56, 0.31, 1);
+                } else if (vPosition.y > 250.0) {
+                    //white
+                    vtxColor = vec4(1.0, 1.0, 1.0, 1);
+                } else {
+                    
+                    vtxColor = vec4(0.24, 0.15, 0.08, 1);
+                }
+            }
         }
     </script>
 
@@ -118,43 +118,47 @@
         uniform vec3 diffuseColor; 
         uniform vec3 specularColor; 
         uniform vec3 lightPos; //Light position 
-        uniform vec3 cameraPos; 
         
         in vec4 vtxColor;
         out vec4 fragColor;
         
         vec3 map_point(float P, float Q, vec3 A, vec3 B, float X) {
-            float coefficient = ( X - P) / ( Q - P );
-      return ( 1.0 - coefficient ) *A + coefficient * B;
-          } 
+            float alpha = ( X - P) / ( Q - P );
+            return ( 1.0 - alpha ) *A + alpha * B;
+        }
+
         vec3 getColor(vec3 position) { 
             if(position.y< 0.00) 
             {   vec3 blue = vec3(0.18039, 0.22353, 0.55686);
                 vec3 brown = vec3(0.24, 0.15, 0.08); 
+                vec3 green = vec3(0.14, 0.56, 0.31); 
                 //return blue;
-                return map_point(-0.15,0.2, blue, brown, position.y); 
+                return map_point(-300.0,100.0, blue, green, position.y); 
             } //blue
-            else if (0.0 < position.y && position.y < 0.06)
+            else if (0.0 < position.y && position.y <150.0)
             { 
                 vec3 brown = vec3(0.24, 0.15, 0.08); 
                 vec3 green = vec3(0.14, 0.56, 0.31); 
-                //return map_point(0.2,0.8, brown, green, position.y); 
-                return map_point(0.105,0.96, brown, green, position.y); 
+                //return brown;
+                return map_point(0.0,150.0, green, brown, position.y); 
             }  //brown 
-            else if (position.y>= 0.19)
+            else if (position.y>= 150.0)
             {  
+                vec3 brown = vec3(0.24, 0.15, 0.08); 
                 vec3 white= vec3(1.0, 1.0, 1.0);
                 vec3 green = vec3(0.14, 0.56, 0.31); 
                 //return white;
-                return map_point(-3.918,2.0, green, white , position.y);  
+                return map_point(150.0,600.0, brown, white , position.y);  
             }  //white 
             else  
             { 
                 vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31); 
-                return map_point(-1.55,2.96, brown, green, position.y);
-                return vec3(0.14, 0.56, 0.31); }
+                vec3 green = vec3(0.14, 0.56, 0.31);
+                vec3 white= vec3(1.0, 1.0, 1.0); 
+                return map_point(100.0,250.0, white, green, position.y);
+                //return vec3(0.14, 0.56, 0.31); 
             }
+        }
         void main()
         {
             if (mode==1.0)
@@ -165,10 +169,10 @@
                 float Ka = 1.0; 
                 float Kd = 1.0; 
                 float Ks = 0.5; 
-                float shininessVal = 1.0; 
-                vec3 ambientColor = getColor(vertPos); 
+                float shininessVal =5.0; 
+                vec3 ambientColor = getColor(vertPos);
                 vec3 diffuseColor = getColor(vertPos);
-                vec3 specularColor = vec3(1.0, 1.0, 1.0); // Lambert's cosine law 
+                vec3 specularColor = vec3(0.0, 0.0, 0.0); // Lambert's cosine law 
                 float lambertian = max(dot(N, L), 0.0); 
                 float specular = 0.0;
 
@@ -179,8 +183,8 @@
                     float specAngle = max(dot(R,V), 0.0); 
                     specular = pow(specAngle, shininessVal); 
                 } 
-                fragColor = vec4(Ka * ambientColor + Kd * lambertian * diffuseColor + Ks * specular * specularColor, 1.0); 
-
+                fragColor = vec4((Ka * ambientColor) + (Kd * lambertian * diffuseColor) + (Ks * specular * specularColor), 1.0); 
+                fragColor = vec4(min(fragColor[0], 1.0), min(fragColor[1], 1.0), min(fragColor[2], 1.0), 1.0);
             }
         }
     </script>
