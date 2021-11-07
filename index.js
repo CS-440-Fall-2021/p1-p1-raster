@@ -76,8 +76,8 @@ var normalmatrix = new Float32Array(16);
 let eye = vec3(300, 1000, -300.0);
 // let at_vector = vec3(0.0, -1.0, -1.0);
 // let at = add(eye, at_vector);
-let at = vec3(0.0, -250.0, 300);
-at = add(eye, at);
+let at_vec = vec3(0.0, -250.0, 300);
+let at = add(eye, at_vec);
 let up = vec3(0.0, 1.0, 0.0);
 
 let left = -0.1;
@@ -288,8 +288,14 @@ function render(timestamp) {
 
   let ymax_loc = gl.getUniformLocation(program, "ymax");
   gl.uniform1i(ymax_loc, canvas.height);
+  
+  // move_camera_pitch();
 
+  move_camera_yaw();
+
+  at = add(eye, at_vec);
   modelViewMatrix = lookAt(eye, at, up);
+
 
   // projectionMatrix = perspective(fovy, aspect, near, far);
   // frustum(left, right, bottom, top, near, far);

@@ -151,6 +151,32 @@ function handleKeyDown(event) {
   } else if (event.keyCode == 16) {
     console.log("shift");
   }
+
+  else if (event.key == "W" || event.key == "w") {
+    at_vec[1] = Math.min(at_vec[1] + 10, 600);
+    console.log(at_vec[1]);
+  }
+
+  else if (event.key == "S" || event.key == "s") {
+    at_vec[1] = Math.max(at_vec[1] - 10, -280);
+    console.log(at_vec[1]);
+  }
+
+  else if (event.key == "D" || event.key == "d") {
+    at_vec[0] = Math.max(at_vec[0] - 10, -280);
+    xmax += at_vec[0];
+    xmin += at_vec[0];
+    console.log(at_vec[0]);
+  }
+
+  else if (event.key == "A" || event.key == "a") {
+    at_vec[0] = Math.min(at_vec[0] + 10, 280);
+    xmin -= at_vec[0];
+    xmax -= at_vec[0];
+    console.log(at_vec[0]);
+  }
+
+
   window.cancelAnimationFrame(anim);
   anim = window.requestAnimationFrame(render);
 }

@@ -443,3 +443,15 @@ function mat4Invert(m, inverse) {
   for (var i = 0; i < 16; i++) inverse[i] = inv[i] * det;
   return true;
 }
+
+function move_camera_pitch()
+{
+  eye[1] = Math.max(eye[1] + (at_vec[1]*0.01), 150);
+
+  eye[1] = Math.min(eye[1], 600);
+}
+
+function move_camera_yaw()
+{
+  
+}
