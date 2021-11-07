@@ -11,148 +11,126 @@ function handleKeyDown(event) {
     shiftPressed = true;
     console.log("Shift Pressed");
   } else if (event.keyCode == 49) {
+    //1
     if (!shiftPressed) {
       //vary left
-      xmin = xmin - 2;
-      xmax = xmax - 2;
-      points = get_patch2(xmin, xmax, zmin, zmax);
+      if (left > -0.3) {
+        left = left - 0.01;
+      }
+
+      // xmin = xmin - 2;
+      // xmax = xmax - 2;
+      // points = get_patch2(xmin, xmax, zmin, zmax);
     } else if (shiftPressed) {
-      xmin = xmin + 2;
-      xmax = xmax + 2;
-      points = get_patch2(xmin, xmax, zmin, zmax);
+      if (left < -0.05) {
+        left = left + 0.01;
+      }
     }
-    // for (let i = 0; i < points.length; i++) {
-    //   points[i][1] = getHeight(points[i][0], points[i][2]);
-    //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-    //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-    //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
+    // if (!shiftPressed) {
+    //   //vary left
+    //   xmin = xmin - 2;
+    //   xmax = xmax - 2;
+    //   points = get_patch2(xmin, xmax, zmin, zmax);
+    // } else if (shiftPressed) {
+    //   xmin = xmin + 2;
+    //   xmax = xmax + 2;
+    //   points = get_patch2(xmin, xmax, zmin, zmax);
     // }
-    // render();
   } else if (event.keyCode == 50) {
+    //2
     //vary right
     if (!shiftPressed) {
-      xmin = xmin + 2;
-      xmax = xmax + 2;
-      points = get_patch2(xmin, xmax, zmin, zmax);
+      if (right < 0.35) {
+        right = right + 0.05;
+      }
     } else if (shiftPressed) {
-      xmin = xmin - 2;
-      xmax = xmax - 2;
-      points = get_patch2(xmin, xmax, zmin, zmax);
+      if (right > 0.1) {
+        right = right - 0.05;
+      }
     }
-    // for (let i = 0; i < points.length; i++) {
-    //   points[i][1] = getHeight(points[i][0], points[i][2]);
-    //   // points[i][1] = map_point(0, canvas.height, 0, 1, y);
-    //   // points[i][0] = map_point(xmin, xmax, -1, 1, points[i][0]);
-    //   // points[i][2] = map_point(zmin, zmax, -1, 1, points[i][2]);
-    // }
-    // render();
   } else if (event.keyCode == 51) {
+    //3
     //vary top
     if (!shiftPressed) {
-      if (eye[1] + 20 < 600) {
-        eye = vec3(eye[0], eye[1] + 20, eye[2]);
+      if (top_ < 1.9) {
+        top_ += 0.05;
       }
     } else if (shiftPressed) {
-      if (eye[1] - 20 > 390) {
-        eye = vec3(eye[0], eye[1] - 20, eye[2]);
+      if (top_ > 0.05) {
+        top_ -= 0.05;
       }
     }
-    // if (flag == 1) {
-    //   for (let i = 0; i < points.length; i++) {
-    //     let p = vec3(0, 0, 0);
-    //     p[1] = map_point(0, canvas.height, 0, 1, points[i][1]).toFixed(2);
-    //     p[0] = map_point(xmin, xmax, -1, 1, points[i][0]).toFixed(2);
-    //     p[2] = map_point(zmin, zmax, -1, 1, points[i][2]).toFixed(2);
-    //     if (eye == p) {
-    //       flag = 1;
-    //       // break
-    //     }
-    //     if (
-    //       Math.abs(eye[1].toFixed(2) - p[1]) < 0.05 &&
-    //       Math.abs(eye[2].toFixed(2) - p[2]) < 0.05 &&
-    //       Math.abs(eye[0].toFixed(2) - p[0]) < 0.1
-    //     ) {
-    //       console.log(eye);
-    //       console.log(p);
-    //       flag = 1;
-    //       break;
-    //     } else if (points.length - i == 1) {
-    //       flag = 0;
-    //     }
+
+    // if (!shiftPressed) {
+    //   if (eye[1] + 20 < 600) {
+    //     eye = vec3(eye[0], eye[1] + 20, eye[2]);
+    //   }
+    // } else if (shiftPressed) {
+    //   if (eye[1] - 20 > 390) {
+    //     eye = vec3(eye[0], eye[1] - 20, eye[2]);
     //   }
     // }
-    // render();
   } else if (event.keyCode == 52) {
+    //4
     //vary bottom
+
     if (!shiftPressed) {
-      if (eye[1] - 0.02 > 0.27) {
-        eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+      if (bottom > -0.7) {
+        bottom -= 0.01;
       }
     } else if (shiftPressed) {
-      if (eye[1] + 0.02 < 1) {
-        eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
+      if (bottom < -0.15) {
+        bottom += 0.01;
       }
     }
-    // for (let i = 0; i < points.length; i++) {
-    //   let p = vec3(0, 0, 0);
-    //   p[1] = map_point(0, canvas.height, 0, 1, points[i][1]).toFixed(2);
-    //   p[0] = map_point(xmin, xmax, -1, 1, points[i][0]).toFixed(2);
-    //   p[2] = map_point(zmin, zmax, -1, 1, points[i][2]).toFixed(2);
-    //   if (eye == p) {
-    //     flag = 1;
-    //     // break
-    //   }
-    //   if (
-    //     Math.abs(eye[1].toFixed(2) - p[1]) < 0.05 &&
-    //     Math.abs(eye[2].toFixed(2) - p[2]) < 0.05 &&
-    //     Math.abs(eye[0].toFixed(2) - p[0]) < 0.1
-    //   ) {
-    //     console.log(eye);
-    //     console.log(p);
-    //     flag = 1;
-    //     break;
-    //   } else if (points.length - i == 1) {
-    //     flag = 0;
-    //   }
-    // }
-    // render();
-    // } else if ((event.shiftkey && event.key == 5) || event.key == 5) {
-    //   //vary near
-    //   near -= 0.05;
-    //   render();
-    // } else if ((event.shiftkey && event.key == 6) || event.key == 6) {
-    //   //vary near
-    //   far += 0.05;
-    //   render();
+    // if (!shiftPressed) {
+
+    //   // if (eye[1] - 0.02 > 0.27) {
+    //   //   eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
+    //   // }
+    // } else if (shiftPressed) {
+    //   // if (eye[1] + 0.02 < 1) {
+    //   //   eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
+    //   // }
     // }
   } else if (event.keyCode == 53) {
+    //5
     if (!shiftPressed) {
       //vary near
-      near += 0.1;
+      if (near < 1.45) {
+        near += 0.02;
+      }
     } else if (shiftPressed) {
-      near -= 0.1;
+      if (near > 0.8) {
+        near -= 0.02;
+      }
     }
-    // zmin = zmin + 2;
-    // zmax = zmax + 2;
-    // points = get_patch2(xmin, xmax, zmin, zmax);
-    // render();
   } else if (event.keyCode == 54) {
+    //6
     //vary far
+    console.log(far);
     if (!shiftPressed) {
-      far += 0.1;
+      if (far < -0.05) {
+        far += 0.05;
+        console.log(far);
+      }
     } else if (shiftPressed) {
-      far -= 0.1;
+      if (far > -1.5) {
+        far -= 0.05;
+        console.log(far);
+      }
     }
-    // zmin = zmin - 2;
-    // zmax = zmax - 2;
-    // points = get_patch2(xmin, xmax, zmin, zmax);
-    // render();
-    // } else if (event.key == "w" || event.key == "W") {
-    // } else if (event.key == "W" || event.key == "w") {
-    //   modelViewMatrix = mult(rotMat, lookAt(eye, at, up));
-    //   window.cancelAnimationFrame(anim);
-    //   render();
-  } else if (event.keyCode == 27) {
+  }
+  // zmin = zmin - 2;
+  // zmax = zmax - 2;
+  // points = get_patch2(xmin, xmax, zmin, zmax);
+  // render();
+  // } else if (event.key == "w" || event.key == "W") {
+  // } else if (event.key == "W" || event.key == "w") {
+  //   modelViewMatrix = mult(rotMat, lookAt(eye, at, up));
+  //   window.cancelAnimationFrame(anim);
+  //   render();
+  else if (event.keyCode == 27) {
     //quit
 
     points = [];
