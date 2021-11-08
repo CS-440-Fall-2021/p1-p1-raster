@@ -56,35 +56,22 @@
         
         vec3 getColor(vec3 position) { 
             if(position.y< 0.00) 
-            {   vec3 blue = vec3(0.18039, 0.22353, 0.55686);
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31); 
-                //return blue;
-                return map_point(-300.0,100.0, blue, green, position.y); 
+            {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
+                vec3 grass = vec3(0.14, 0.56, 0.31); 
+                return map_point(-300.0,100.0, water, grass, position.y); 
             } //blue
             else if (0.0 < position.y && position.y <150.0)
             { 
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31); 
-                //return brown;
-                return map_point(0.0,150.0, green, brown, position.y); 
+                vec3 mountain = vec3(0.24, 0.15, 0.08); 
+                vec3 grass = vec3(0.14, 0.56, 0.31); 
+                return map_point(0.0,150.0, grass, mountain, position.y); 
             }  //brown 
             else if (position.y>= 150.0)
             {  
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 white= vec3(1.0, 1.0, 1.0);
-                vec3 green = vec3(0.14, 0.56, 0.31); 
-                //return white;
-                return map_point(150.0,600.0, brown, white , position.y);  
+                vec3 mountain = vec3(0.24, 0.15, 0.08); 
+                vec3 snow = vec3(1.0, 1.0, 1.0);
+                return map_point(150.0,600.0, mountain, snow , position.y);  
             }  //white 
-            else  
-            { 
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31);
-                vec3 white= vec3(1.0, 1.0, 1.0); 
-                return map_point(100.0,250.0, white, green, position.y);
-                //return vec3(0.14, 0.56, 0.31); 
-            }
         } 
 
         void main()
@@ -188,35 +175,25 @@
 
         vec3 getColor(vec3 position) { 
             if(position.y< 0.00) 
-            {   vec3 blue = vec3(0.18039, 0.22353, 0.55686);
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31); 
+            {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
+                vec3 grass = vec3(0.14, 0.56, 0.31); 
                 //return blue;
-                return map_point(-300.0,100.0, blue, green, position.y); 
+                return map_point(-300.0,100.0, water, grass, position.y); 
             } //blue
             else if (0.0 < position.y && position.y <150.0)
             { 
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31); 
+                vec3 mountain = vec3(0.24, 0.15, 0.08); 
+                vec3 grass = vec3(0.14, 0.56, 0.31); 
                 //return brown;
-                return map_point(0.0,150.0, green, brown, position.y); 
+                return map_point(0.0,150.0, grass, mountain, position.y); 
             }  //brown 
             else if (position.y>= 150.0)
             {  
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 white= vec3(1.0, 1.0, 1.0);
-                vec3 green = vec3(0.14, 0.56, 0.31); 
+                vec3 mountain = vec3(0.24, 0.15, 0.08); 
+                vec3 snow = vec3(1.0, 1.0, 1.0);
                 //return white;
-                return map_point(150.0,600.0, brown, white , position.y);  
+                return map_point(150.0,600.0, mountain, snow , position.y);  
             }  //white 
-            else  
-            { 
-                vec3 brown = vec3(0.24, 0.15, 0.08); 
-                vec3 green = vec3(0.14, 0.56, 0.31);
-                vec3 white= vec3(1.0, 1.0, 1.0); 
-                return map_point(100.0,250.0, white, green, position.y);
-                //return vec3(0.14, 0.56, 0.31); 
-            }
         }
 
         void main()
@@ -231,10 +208,10 @@
                 float Ka = 1.0; 
                 float Kd = 1.0; 
                 float Ks = 0.5; 
-                float shininessVal =5.0; 
+                float shininessVal = 5.0; 
                 vec3 ambientColor = getColor(vertPos);
-                vec3 diffuseColor = getColor(vertPos);
-                vec3 specularColor = vec3(0.0, 0.0, 0.0); // Lambert's cosine law 
+                vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
+                vec3 specularColor = vec3(1.0, 1.0, 1.0); // Lambert's cosine law 
                 float lambertian = max(dot(N, L), 0.0); 
                 float specular = 0.0;
 
