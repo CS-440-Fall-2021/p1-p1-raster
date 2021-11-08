@@ -73,12 +73,14 @@ var normalmatrix = new Float32Array(16);
 // at = add(eye, at);
 // let up = vec3(0.0, 1.0, 0.0);
 
-let eye = vec3(300, 1000, -300.0);
+let eye = vec3(1200, 400, -300.0);
 // let at_vector = vec3(0.0, -1.0, -1.0);
 // let at = add(eye, at_vector);
-let at_vec = vec3(0.0, -250.0, 300);
+let at_vec = vec3(0.0, 0.0, 300.0);
 let at = add(eye, at_vec);
 let up = vec3(0.0, 1.0, 0.0);
+
+let new_eye = eye;
 
 let left = -0.1;
 let right = 0.1;
@@ -86,6 +88,10 @@ let bottom = -0.5;
 let top_ = 0.5;
 let near = 1.0;
 let far = -1.0;
+
+let pitch = 0;
+let yaw = 0;
+let roll = 0;
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
@@ -247,12 +253,22 @@ function render(timestamp) {
   // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
 
   if (flag != 1) {
-    zmin = zmin + 1;
-    zmax = zmax + 1;
+    // zmin = zmin + 1;
+    // zmax = zmax + 1;
 
     // xmin = xmin - 1;
     // xmax = xmax - 1;
   }
+
+  // new_eye = add(new_eye, at_vec);
+
+  // xmin = new_eye[0] - 300;
+  // xmax = new_eye[0] + 300;
+
+  // zmin = new_eye[2] - 300;
+  // zmax = new_eye[2] + 300;
+
+  // console.log(xmin, xmax, zmin, zmax, eye);
 
   points = get_patch2(xmin, xmax, zmin, zmax);
 
@@ -289,13 +305,39 @@ function render(timestamp) {
   let ymax_loc = gl.getUniformLocation(program, "ymax");
   gl.uniform1i(ymax_loc, canvas.height);
   
-  // move_camera_pitch();
+  // console.log(pitch);
+  let rotate_x_matrix = rotateX(pitch);
+  let rotate_y_matrix = rotateY(yaw);
+  let rotate_z_matrix = rotateZ(roll);
 
+  up = vec4(0, 1, 0, 0);
+  up = mult(rotate_z_matrix, up);
+  up = vec3(up[0], up[1], up[2]);
+
+  at_vec = vec3(0.0, 0.0, 1.0);
+  at_vec = vec4(at_vec[0], at_vec[1], at_vec[2], 0)
+  let rotate_xy = mult(rotate_y_matrix, rotate_x_matrix);
+  at_vec = mult(rotate_xy, at_vec);
+
+  at_vec = vec3(at_vec[0], at_vec[1], at_vec[2]);
+  move_camera_pitch();
+  // console.log(eye);
+  // console.log(xmin, xmax);
+  // console.log(zmin, zmax);
   // move_camera_yaw();
-
+  
   at = add(eye, at_vec);
   modelViewMatrix = lookAt(eye, at, up);
+  
+  new_eye = add(new_eye, at_vec);
+  
+  // console.log(new_eye);
+  // console.log(at_vec);
+  xmin = new_eye[0] - 1200;
+  xmax = new_eye[0] + 1200;
 
+  zmin = new_eye[2] - 1200;
+  zmax = new_eye[2] + 1200;
 
   // projectionMatrix = perspective(fovy, aspect, near, far);
   // frustum(left, right, bottom, top, near, far);
