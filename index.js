@@ -303,8 +303,10 @@ function render(timestamp) {
 
   // projectionMatrix = mult(projectionMatrix, modelViewMatrix);`
 
-  mat4Invert(modelViewMatrix, modelviewInv);
-  mat4Transpose(modelviewInv, normalmatrix);
+  modelviewInv = inverse4(modelViewMatrix);
+  // console.log(modelviewInv);
+  normalmatrix = transpose(modelviewInv);
+  // console.log(normalmatrix);
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));

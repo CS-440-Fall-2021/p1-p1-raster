@@ -191,6 +191,7 @@ function frustum(left, right, bottom, top, near, far) {
 
   return result;
 }
+
 function mat4Transpose(a, transposed) {
   var t = 0;
   for (var i = 0; i < 4; ++i) {
@@ -198,6 +199,7 @@ function mat4Transpose(a, transposed) {
       transposed[t++] = a[j * 4 + i];
     }
   }
+  return transposed;
 }
 
 function mat4Invert(m, inverse) {
@@ -322,7 +324,7 @@ function mat4Invert(m, inverse) {
   return true;
 }
 
-function mat4Invert(m, inverse) {
+function mat4Invert(m) {
   var inv = new Float32Array(16);
   inv[0] =
     m[5] * m[10] * m[15] -
@@ -454,4 +456,61 @@ function move_camera_pitch()
 function move_camera_yaw()
 {
   
+}
+
+function transpose(m) {
+  let result;
+  if (m.type == "patch") {
+    let out = patch();
+    for (let i = 0; i < 4; i++) out[i] = new Array(4);
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) out[i][j] = m[j][i];
+    return out;
+  }
+  switch (m.type) {
+    case "mat2":
+       result = mat2(m[0][0], m[1][0], m[0][1], m[1][1]);
+      return result;
+      break;
+
+    case "mat3":
+      result = mat3(
+        m[0][0],
+        m[1][0],
+        m[2][0],
+        m[0][1],
+        m[1][1],
+        m[2][1],
+        m[0][2],
+        m[1][2],
+        m[2][2]
+      );
+      return result;
+      break;
+
+    case "mat4":
+      result = mat4(
+        m[0][0],
+        m[1][0],
+        m[2][0],
+        m[3][0],
+        m[0][1],
+        m[1][1],
+        m[2][1],
+        m[3][1],
+        m[0][2],
+        m[1][2],
+        m[2][2],
+        m[3][2],
+        m[0][3],
+        m[1][3],
+        m[2][3],
+        m[3][3]
+      );
+
+      return result;
+      break;
+
+    default:
+      throw "transpose(): trying to transpose a non-matrix";
+  }
 }
