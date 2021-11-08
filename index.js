@@ -73,7 +73,7 @@ var normalmatrix = new Float32Array(16);
 // at = add(eye, at);
 // let up = vec3(0.0, 1.0, 0.0);
 
-let eye = vec3(1200, 400, -300.0);
+let eye = vec3(1200, 400, 300.0);
 // let at_vector = vec3(0.0, -1.0, -1.0);
 // let at = add(eye, at_vector);
 let at_vec = vec3(0.0, 0.0, 300.0);

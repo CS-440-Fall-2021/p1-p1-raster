@@ -168,7 +168,7 @@ function handleKeyDown(event) {
     // at_vec[0] = Math.max(at_vec[0] - 10, -280);
     // xmax += at_vec[0];
     // xmin += at_vec[0];
-    yaw = Math.max(yaw - 1, -45);
+    yaw = Math.max(yaw - 1, -90);
     // console.log(at_vec[0]);
   }
 
@@ -177,7 +177,7 @@ function handleKeyDown(event) {
     // xmin -= at_vec[0];
     // xmax -= at_vec[0];
     // console.log(at_vec[0]);
-    yaw = Math.min(yaw + 1, 45);
+    yaw = Math.min(yaw + 1, 90);
   }
 
   else if (event.key == "Q" || event.key == "q") {
