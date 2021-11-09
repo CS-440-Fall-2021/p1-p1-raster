@@ -458,6 +458,28 @@ function move_camera_pitch() {
 
 function move_camera_yaw() {}
 
+function detect_collion()
+{
+  let collided = false;
+  let temp_eye = add(eye, mult(5, at_vec))
+  temp_eye = vec4(temp_eye[0], temp_eye[1], temp_eye[2], 0);
+  for(let i = 0; i < points.length; i++) 
+  {
+    let diff = subtract(temp_eye, points[i]);
+    if (Math.abs(diff[0]) < 50 && Math.abs(diff[1]) < 50 && Math.abs(diff[2]) < 50)
+    {
+      // console.log(diff);
+      speed = 1;
+      stopped = true;
+      collided = true;
+    }
+  }
+  if (!collided)
+  {
+    stopped = false;
+  }
+}
+
 function transpose(m) {
   let result;
   if (m.type == "patch") {

@@ -307,6 +307,8 @@ function render(timestamp) {
   let rotate_y_matrix = rotateY(yaw);
   let rotate_z_matrix = rotateZ(roll);
 
+  detect_collion();
+
   up = vec4(0, 1, 0, 0);
   up = mult(rotate_z_matrix, up);
   up = vec3(up[0], up[1], up[2]);
