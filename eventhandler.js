@@ -104,13 +104,14 @@ function handleKeyDown(event) {
     // }
   } else if (event.keyCode == 53) {
     //5
+
     if (!shiftPressed) {
       //vary near
       if (near < 1.45) {
         near += 0.02;
       }
     } else if (shiftPressed) {
-      if (near > 0.8) {
+      if (near > 0.1) {
         near -= 0.02;
       }
     }
@@ -150,64 +151,52 @@ function handleKeyDown(event) {
     gl.drawArrays(gl.TRIANGLES, 0, points.length); //Rendering the triangle
   } else if (event.keyCode == 16) {
     console.log("shift");
-  }
-
-  else if (event.key == "W" || event.key == "w") {
+  } else if (event.key == "W" || event.key == "w") {
     // at_vec[1] = Math.min(at_vec[1] + 10, 600);
     pitch = Math.max(pitch - 1, -45);
     // console.log(at_vec[1]);
-  }
-
-  else if (event.key == "S" || event.key == "s") {
+  } else if (event.key == "S" || event.key == "s") {
     // at_vec[1] = Math.max(at_vec[1] - 10, -280);
     pitch = Math.min(pitch + 1, 45);
     // console.log(at_vec[1]);
-  }
-
-  else if (event.key == "D" || event.key == "d") {
+  } else if (event.key == "D" || event.key == "d") {
     // at_vec[0] = Math.max(at_vec[0] - 10, -280);
     // xmax += at_vec[0];
     // xmin += at_vec[0];
     yaw = Math.max(yaw - 1, -90);
     // console.log(at_vec[0]);
-  }
-
-  else if (event.key == "A" || event.key == "a") {
+  } else if (event.key == "A" || event.key == "a") {
     // at_vec[0] = Math.min(at_vec[0] + 10, 280);
     // xmin -= at_vec[0];
     // xmax -= at_vec[0];
     // console.log(at_vec[0]);
     yaw = Math.min(yaw + 1, 90);
-  }
-
-  else if (event.key == "Q" || event.key == "q") {
+  } else if (event.key == "Q" || event.key == "q") {
     // at_vec[0] = Math.min(at_vec[0] + 10, 280);
     // xmin -= at_vec[0];
     // xmax -= at_vec[0];
     // console.log(at_vec[0]);
     roll = Math.max(roll - 1, -90);
-  }
-
-  else if (event.key == "E" || event.key == "e") {
+    // if (roll > -90) {
+    //   left -= 0.01;
+    //   right += 0.01;
+    // }
+  } else if (event.key == "E" || event.key == "e") {
     // at_vec[0] = Math.min(at_vec[0] + 10, 280);
     // xmin -= at_vec[0];
     // xmax -= at_vec[0];
     // console.log(at_vec[0]);
     roll = Math.min(roll + 1, 90);
-  }
-
-  else if (event.keyCode == 38) {
-    if (stopped)
-      stopped = false;
-    else
-      speed = Math.min(10, speed + 1);
-  }
-
-  else if (event.keyCode == 40) {
-    if (speed > 1)
-      speed = speed - 1;
-    else
-      stopped = true;
+    // if (roll < 90) {
+    //   left -= 0.01;
+    //   right += 0.01;
+    // }
+  } else if (event.keyCode == 38) {
+    if (stopped) stopped = false;
+    else speed = Math.min(10, speed + 1);
+  } else if (event.keyCode == 40) {
+    if (speed > 1) speed = speed - 1;
+    else stopped = true;
   }
 
   window.cancelAnimationFrame(anim);
