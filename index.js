@@ -324,12 +324,13 @@ function render(timestamp) {
     // console.log(xmin, xmax);
     // console.log(zmin, zmax);
     // move_camera_yaw();
-
+  }
     at = add(eye, at_vec);
     modelViewMatrix = lookAt(eye, at, up);
 
+    if (!stopped) {
     eye = add(eye, at_vec);
-
+    }
     //console.log(at_vec);
     // console.log(at_vec);
     xmin = eye[0] - 1200;
@@ -337,7 +338,6 @@ function render(timestamp) {
 
     zmin = eye[2] - 1200;
     zmax = eye[2] + 1200;
-  }
 
   // projectionMatrix = perspective(fovy, aspect, near, far);
   // frustum(left, right, bottom, top, near, far);
