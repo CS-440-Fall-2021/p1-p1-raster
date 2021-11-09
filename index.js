@@ -65,13 +65,14 @@ let top_ = 0.5;
 let near = 0.1;
 let far = -0.1;
 
+// Degrees of angles of each rotation
 let pitch = 0;
 let yaw = 0;
 let roll = 0;
 
 let speed = 1.0; // speed of the plane
-let stopped = false;
-let collision_enabled = false;
+let stopped = false; // if camera is stopped
+let collision_enabled = false; // used for checking if collisions enabled
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
