@@ -3,15 +3,12 @@
 let gl; // WebGL "context"
 let program;
 
-let t = 0.0;
+
 let modeVal = 1.0;
 let lightPos = [-50.0, 200.0, 300.0];
-let lightVec = new Float32Array(3);
 let ambientColor = [0.2, 0.5, 0.0];
 let diffuseColor = [0.8, 0.4, 0.0];
 let specularColor = [1.0, 1.0, 1.0];
-let clearColor = [0.0, 0.4, 0.7];
-let attenuation = 0.01;
 let shininess = 2.0;
 let kaVal = 1.0;
 let kdVal = 1.0;
@@ -36,10 +33,8 @@ var modeLoc = 0;
 var kaLoc = 0;
 var kdLoc = 0;
 var ksLoc = 0;
-var attenuationLoc = 0;
 var shininessLoc = 0;
 var lightPosLoc = 0;
-var lightVecLoc = 0;
 var ambientColorLoc = 0;
 var diffuseColorLoc = 0;
 var specularColorLoc = 0;
@@ -145,12 +140,10 @@ window.onload = function init() {
   normalMatrixLoc = gl.getUniformLocation(program, "normalMat");
   modeLoc = gl.getUniformLocation(program, "mode");
   lightPosLoc = gl.getUniformLocation(program, "lightPos");
-  lightVecLoc = gl.getUniformLocation(program, "lightVec");
   ambientColorLoc = gl.getUniformLocation(program, "ambientColor");
   diffuseColorLoc = gl.getUniformLocation(program, "diffuseColor");
   specularColorLoc = gl.getUniformLocation(program, "specularColor");
   shininessLoc = gl.getUniformLocation(program, "shininessVal");
-  attenuationLoc = gl.getUniformLocation(program, "attenuationVal");
   kaLoc = gl.getUniformLocation(program, "Ka");
   kdLoc = gl.getUniformLocation(program, "Kd");
   ksLoc = gl.getUniformLocation(program, "Ks");
@@ -220,10 +213,8 @@ function render(timestamp) {
   if (kaLoc != -1) gl.uniform1f(kaLoc, kaVal);
   if (kdLoc != -1) gl.uniform1f(kdLoc, kdVal);
   if (ksLoc != -1) gl.uniform1f(ksLoc, ksVal);
-  if (attenuationLoc != -1) gl.uniform1f(attenuationLoc, attenuation);
   if (shininessLoc != -1) gl.uniform1f(shininessLoc, shininess);
   if (lightPosLoc != -1) gl.uniform3fv(lightPosLoc, lightPos);
-  if (lightVecLoc != -1) gl.uniform3fv(lightVecLoc, lightVec);
   if (ambientColorLoc != -1) gl.uniform3fv(ambientColorLoc, ambientColor);
   if (diffuseColorLoc != -1) gl.uniform3fv(diffuseColorLoc, diffuseColor);
   if (specularColorLoc != -1) gl.uniform3fv(specularColorLoc, specularColor);
