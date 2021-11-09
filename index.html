@@ -129,7 +129,7 @@
                 float Ks = 0.5; 
                 float shininessVal =5.0; 
                 vec3 ambientColor = getColor(vertPos);
-                vec3 diffuseColor = getColor(vertPos);
+                vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
                 vec3 specularColor = vec3(0.0, 0.0, 0.0); // Lambert's cosine law 
                 float lambertian = max(dot(N, L), 0.0); 
                 float specular = 0.0;
@@ -244,10 +244,13 @@
     <canvas id="gl-canvas" width="600" height="600" style="border:1px solid #000000;">
         Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
-    <div style=" font-family: 'Times New Roman', Times, serif;; position: absolute; top: 55px; left: 720px; font-size:large;">
-        <b><h1 style="text-indent: 1px">Flight Simulator</h1></b>
+    <div
+        style=" font-family: 'Times New Roman', Times, serif;; position: absolute; top: 55px; left: 720px; font-size:large;">
+        <b>
+            <h1 style="text-indent: 1px">Flight Simulator</h1>
+        </b>
         <p style="margin-left: 5px;">Instructions:</p>
-        <p  style="margin-left: 5px;">
+        <p style="margin-left: 5px;">
             Shift+1 or 1 = Vary Left<br>
             Shift+2 or 2 = Vary Right<br>
             Shift+3 or 3 = Vary Top<br>

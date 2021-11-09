@@ -1,7 +1,7 @@
 function get_patch2(xmin, xmax, zmin, zmax) {
   let ret = [];
-  var xDiff = 0// - xmin;
-  var zDiff = 0// - zmin;
+  var xDiff = 0; // - xmin;
+  var zDiff = 0; // - zmin;
   var xzMin = vec2(xmin, zmin);
   var xzMax = vec2(xmax, zmax);
   var xDivs = 150;
@@ -72,7 +72,7 @@ function map_point(P, Q, A, B, X) {
 }
 
 function getHeight(x, z) {
-  return noise.perlin2(-x / 1.5, -z / 1.5) * 500;
+  return noise.perlin2(-x / 1.5, -z / 1.5) * 1000;
 }
 
 function get_patch(xmin, xmax, zmin, zmax) {
@@ -446,9 +446,8 @@ function mat4Invert(m) {
   return true;
 }
 
-function move_camera_pitch()
-{
-  eye[1] = Math.max(eye[1] + (at_vec[1]*10), 200);
+function move_camera_pitch() {
+  eye[1] = Math.max(eye[1] + at_vec[1] * 10, 200);
 
   eye[1] = Math.min(eye[1], 600);
 
@@ -457,10 +456,7 @@ function move_camera_pitch()
   // eye[1] = eye[1] + at_vec[1]*0.01;
 }
 
-function move_camera_yaw()
-{
-  
-}
+function move_camera_yaw() {}
 
 function transpose(m) {
   let result;
@@ -472,7 +468,7 @@ function transpose(m) {
   }
   switch (m.type) {
     case "mat2":
-       result = mat2(m[0][0], m[1][0], m[0][1], m[1][1]);
+      result = mat2(m[0][0], m[1][0], m[0][1], m[1][1]);
       return result;
       break;
 
@@ -519,12 +515,11 @@ function transpose(m) {
   }
 }
 
-function getAvg(array){
+function getAvg(array) {
   var sum = 0;
-  for( var i = 0; i < array.length; i++ ){
+  for (var i = 0; i < array.length; i++) {
     sum += array[i]; //don't forget to add the base
-}
+  }
 
-return sum/array.length;
-
+  return sum / array.length;
 }
