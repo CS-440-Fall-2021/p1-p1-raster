@@ -73,6 +73,9 @@
                 vec3 snow = vec3(1.0, 1.0, 1.0);
                 return map_point(150.0,600.0, mountain, snow , position.y);  
             }  //white 
+            else{
+                return vec3(0.18039, 0.22353, 0.55686);
+            }
         } 
 
         void main()
@@ -181,6 +184,9 @@
                 //return white;
                 return map_point(150.0,600.0, mountain, snow , position.y);  
             }  //white 
+            else{
+                return vec3(0.18039, 0.22353, 0.55686);
+            }
         }
 
         void main()
