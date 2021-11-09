@@ -1,7 +1,5 @@
 function get_patch(xmin, xmax, zmin, zmax) {
   let ret = []; // triangle vertices
-  var xDiff = 0; // - xmin;
-  var zDiff = 0; // - zmin;
   var xzMin = vec2(xmin, zmin);
   var xzMax = vec2(xmax, zmax);
   var xDivs = 100;
@@ -22,16 +20,9 @@ function get_patch(xmin, xmax, zmin, zmax) {
       //   |        \
       //   |__________\
       // x,z+dz      x+dx,z+dz
-      ret.push(vec4(x + xDiff, getHeight(xoff, zoff), z + zDiff, 1));
-      ret.push(vec4(x + xDiff, getHeight(xoff, zoff + 0.1), z + zDiff + dz, 1));
-      ret.push(
-        vec4(
-          x + xDiff + dx,
-          getHeight(xoff + 0.1, zoff + 0.1),
-          z + zDiff + dz,
-          1
-        )
-      );
+      ret.push(vec4(x, getHeight(xoff, zoff), z, 1));
+      ret.push(vec4(x, getHeight(xoff, zoff + 0.1), z + dz, 1));
+      ret.push(vec4(x + dx, getHeight(xoff + 0.1, zoff + 0.1), z + dz, 1));
 
       //Triangle 2
       //  x,z         x+dx,z
@@ -42,16 +33,9 @@ function get_patch(xmin, xmax, zmin, zmax) {
       //            \  |
       //              \|
       //           x+dx,z+dz
-      ret.push(vec4(x + xDiff, getHeight(xoff, zoff), z + zDiff, 1));
-      ret.push(
-        vec4(
-          x + xDiff + dx,
-          getHeight(xoff + 0.1, zoff + 0.1),
-          z + zDiff + dz,
-          1
-        )
-      );
-      ret.push(vec4(x + xDiff + dx, getHeight(xoff + 0.1, zoff), z + zDiff, 1));
+      ret.push(vec4(x, getHeight(xoff, zoff), z, 1));
+      ret.push(vec4(x + dx, getHeight(xoff + 0.1, zoff + 0.1), z + dz, 1));
+      ret.push(vec4(x + dx, getHeight(xoff + 0.1, zoff), z, 1));
       zoff += 0.1;
     }
     xoff += 0.1;
