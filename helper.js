@@ -4,8 +4,8 @@ function get_patch2(xmin, xmax, zmin, zmax) {
   var zDiff = 0; // - zmin;
   var xzMin = vec2(xmin, zmin);
   var xzMax = vec2(xmax, zmax);
-  var xDivs = 150;
-  var zDivs = 150;
+  var xDivs = 100;
+  var zDivs = 100;
   var dim = subtract(xzMax, xzMin);
   var dx = dim[0] / xDivs;
   var dz = dim[1] / zDivs;
@@ -458,24 +458,24 @@ function move_camera_pitch() {
 
 function move_camera_yaw() {}
 
-function detect_collion()
-{
+function detect_collion() {
   let collided = false;
-  let temp_eye = add(eye, mult(5, at_vec))
+  let temp_eye = add(eye, mult(5, at_vec));
   temp_eye = vec4(temp_eye[0], temp_eye[1], temp_eye[2], 0);
-  for(let i = 0; i < points.length; i++) 
-  {
+  for (let i = 0; i < points.length; i++) {
     let diff = subtract(temp_eye, points[i]);
-    if (Math.abs(diff[0]) < 50 && Math.abs(diff[1]) < 50 && Math.abs(diff[2]) < 50)
-    {
+    if (
+      Math.abs(diff[0]) < 50 &&
+      Math.abs(diff[1]) < 50 &&
+      Math.abs(diff[2]) < 50
+    ) {
       // console.log(diff);
       speed = 1;
       stopped = true;
       collided = true;
     }
   }
-  if (!collided)
-  {
+  if (!collided) {
     stopped = false;
   }
 }
