@@ -3,7 +3,6 @@
 let gl; // WebGL "context"
 let program;
 
-
 let modeVal = 1.0;
 let lightPos = [-50.0, 200.0, 300.0];
 let ambientColor = [0.2, 0.5, 0.0];
@@ -163,43 +162,44 @@ window.onload = function init() {
 function render(timestamp) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  if (modeVal == 1.0)
-  {
+  //Assigning colours for flat shading
+  if (modeVal == 1.0) {
     colors2 = [];
-  for (let i = 0; i < points.length; i++) {
-    if (points[i][1] < 0.0) {
-      //blue
-      colors2.push(vec3(0.18039, 0.22353, 0.55686));
-    } else if (0.0 < points[i][1] && points[i][1] < 100.0) {
-      //brown
-      colors2.push(vec3(0.14, 0.56, 0.31));
-    } else if (points[i][1] > 250.0) {
-      //white
-      colors2.push(vec3(1.0, 1.0, 1.0));
-    } else {
-      colors2.push(vec3(0.24, 0.15, 0.08));
+    for (let i = 0; i < points.length; i++) {
+      if (points[i][1] < 0.0) {
+        //blue
+        colors2.push(vec3(0.18039, 0.22353, 0.55686));
+      } else if (0.0 < points[i][1] && points[i][1] < 100.0) {
+        //brown
+        colors2.push(vec3(0.14, 0.56, 0.31));
+      } else if (points[i][1] > 250.0) {
+        //white
+        colors2.push(vec3(1.0, 1.0, 1.0));
+      } else {
+        colors2.push(vec3(0.24, 0.15, 0.08));
+      }
     }
-  }
-  colors = [];
+    colors = [];
 
-  for (var i = 0; i < colors2.length; i += 3) {
-    let c = vec3(
-      getAvg([colors2[i][0], colors2[i + 1][0], colors2[i + 2][0]]),
-      getAvg([colors2[i][1], colors2[i + 1][1], colors2[i + 2][1]]),
-      getAvg([colors2[i][2], colors2[i + 1][2], colors2[i + 2][2]])
-    );
-    colors.push(c);
-    colors.push(c);
-    colors.push(c);
-  }
+    for (var i = 0; i < colors2.length; i += 3) {
+      //Calculating average for rgb channels
+      let c = vec3(
+        getAvg([colors2[i][0], colors2[i + 1][0], colors2[i + 2][0]]),
+        getAvg([colors2[i][1], colors2[i + 1][1], colors2[i + 2][1]]),
+        getAvg([colors2[i][2], colors2[i + 1][2], colors2[i + 2][2]])
+      );
+      colors.push(c);
+      colors.push(c);
+      colors.push(c);
+    }
 
-  cBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-  let colorLoc = gl.getAttribLocation(program, "vColor");
-  gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(colorLoc);
-}
+    cBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+    let colorLoc = gl.getAttribLocation(program, "vColor");
+    gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(colorLoc);
+  }
 
   points = get_patch(xmin, xmax, zmin, zmax);
 
@@ -273,6 +273,7 @@ function render(timestamp) {
 
   projectionMatrix = frustum(left, right, bottom, top_, near, far);
 
+  //Calculating surface normals
   modelviewInv = inverse4(modelViewMatrix);
   normalmatrix = transpose(modelviewInv);
 
