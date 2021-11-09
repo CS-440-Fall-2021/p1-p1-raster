@@ -117,7 +117,7 @@ function handleKeyDown(event) {
     // change yaw
     yaw = Math.min(yaw + 1, 90);
   } else if (event.key == "Q" || event.key == "q") {
-    // change roll
+    // change roll and viewing volume accordingly
     roll = Math.max(roll - 1, -90);
     if (roll > -90 && roll <= 0) {
       left -= 0.01;
@@ -127,7 +127,7 @@ function handleKeyDown(event) {
       right -= 0.01;
     }
   } else if (event.key == "E" || event.key == "e") {
-    // change roll
+    // change roll and viewing volume accordingly
     roll = Math.min(roll + 1, 90);
     if (roll <= 0) {
       left += 0.01;

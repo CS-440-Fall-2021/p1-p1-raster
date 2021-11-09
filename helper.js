@@ -364,11 +364,14 @@ function mat4Invert(m) {
   return true;
 }
 
+// Changes the Y coordinate of the camera accordingly
 function move_camera_pitch() {
   eye[1] = Math.max(eye[1] + at_vec[1] * 10, 200);
   eye[1] = Math.min(eye[1], 1000);
 }
 
+// Detects collisions and stops camera if collided
+// Resumes flight when at_vec is not colliding with any point
 function detect_collion() {
   let collided = false;
   let temp_eye = add(eye, mult(3, at_vec));
