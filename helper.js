@@ -1,7 +1,7 @@
 function get_patch2(xmin, xmax, zmin, zmax) {
   let ret = [];
-  var xDiff = 0 - xmin;
-  var zDiff = 0 - zmin;
+  var xDiff = 0;
+  var zDiff = 0;
   var xzMin = vec2(xmin, zmin);
   var xzMax = vec2(xmax, zmax);
   var xDivs = 150;
