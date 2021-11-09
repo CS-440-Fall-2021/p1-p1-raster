@@ -304,17 +304,22 @@ function render(timestamp) {
   gl.uniform1i(ymax_loc, canvas.height);
 
   // console.log(pitch);
+  // Gets Rotation matrices
   let rotate_x_matrix = rotateX(pitch);
   let rotate_y_matrix = rotateY(yaw);
   let rotate_z_matrix = rotateZ(roll);
 
+  // Checks for collisions if enabled
   if (collision_enabled)
     detect_collion();
 
+  // Rolls camera accordingly
   up = vec4(0, 1, 0, 0);
   up = mult(rotate_z_matrix, up);
   up = vec3(up[0], up[1], up[2]);
 
+
+  // Change the yaw and pitch of the camera accordingly
   at_vec = vec3(0.0, 0.0, speed);
   at_vec = vec4(at_vec[0], at_vec[1], at_vec[2], 0);
   let rotate_xy = mult(rotate_y_matrix, rotate_x_matrix);
@@ -322,6 +327,7 @@ function render(timestamp) {
 
   at_vec = vec3(at_vec[0], at_vec[1], at_vec[2]);
 
+  // Doesn't allow camera to move when speed is 0
   if (!stopped) {
     move_camera_pitch();
     // console.log(eye);
@@ -329,6 +335,7 @@ function render(timestamp) {
     // console.log(zmin, zmax);
     // move_camera_yaw();
   }
+
     at = add(eye, at_vec);
     modelViewMatrix = lookAt(eye, at, up);
 
@@ -337,6 +344,8 @@ function render(timestamp) {
     }
     //console.log(at_vec);
     // console.log(at_vec);
+
+    // Generates terrain of 1200 points with camera in center
     xmin = eye[0] - 1200;
     xmax = eye[0] + 1200;
 
