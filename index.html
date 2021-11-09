@@ -120,7 +120,7 @@
                 float shininessVal = 30.0; 
                 vec3 ambientColor = getColor(vertPos);
                 vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
-                vec3 specularColor = vec3(0.0, 0.0, 0.0); // Lambert's cosine law 
+                vec3 specularColor = vec3(1.0, 1.0, 1.0); // Lambert's cosine law 
                 float lambertian = max(dot(N, L), 0.0); 
                 float specular = 0.0;
 
