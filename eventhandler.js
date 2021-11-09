@@ -153,7 +153,7 @@ function handleKeyDown(event) {
     console.log("shift");
   } else if (event.key == "W" || event.key == "w") {
     // at_vec[1] = Math.min(at_vec[1] + 10, 600);
-    pitch = Math.max(pitch - 1, -45);
+    pitch = Math.max(pitch - 1, -90);
     // console.log(at_vec[1]);
   } else if (event.key == "S" || event.key == "s") {
     // at_vec[1] = Math.max(at_vec[1] - 10, -280);
@@ -180,9 +180,7 @@ function handleKeyDown(event) {
     if (roll > -90 && roll <= 0) {
       left -= 0.01;
       right += 0.01;
-    }
-    else if (roll > 0)
-    {
+    } else if (roll > 0) {
       left += 0.01;
       right -= 0.01;
     }
@@ -195,9 +193,7 @@ function handleKeyDown(event) {
     if (roll <= 0) {
       left += 0.01;
       right -= 0.01;
-    }
-    else if (roll > 0 && roll < 90)
-    {
+    } else if (roll > 0 && roll < 90) {
       left -= 0.01;
       right += 0.01;
     }
