@@ -58,6 +58,7 @@
             if(position.y< 0.00) 
             {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
                 vec3 grass = vec3(0.14, 0.56, 0.31); 
+                return water;
                 return map_point(-300.0,100.0, water, grass, position.y); 
             } //blue
             else if (0.0 < position.y && position.y <150.0)
@@ -178,7 +179,7 @@
             {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
                 vec3 grass = vec3(0.14, 0.56, 0.31); 
                 //return blue;
-                return map_point(-300.0,100.0, water, grass, position.y); 
+                return water;
             } //blue
             else if (0.0 < position.y && position.y <150.0)
             { 
