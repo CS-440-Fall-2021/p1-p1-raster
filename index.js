@@ -170,7 +170,9 @@ window.onload = function init() {
 function render(timestamp) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  colors2 = [];
+  if (modeVal == 1.0)
+  {
+    colors2 = [];
   for (let i = 0; i < points.length; i++) {
     if (points[i][1] < 0.0) {
       //blue
@@ -185,6 +187,26 @@ function render(timestamp) {
       colors2.push(vec3(0.24, 0.15, 0.08));
     }
   }
+  colors = [];
+
+  for (var i = 0; i < colors2.length; i += 3) {
+    let c = vec3(
+      getAvg([colors2[i][0], colors2[i + 1][0], colors2[i + 2][0]]),
+      getAvg([colors2[i][1], colors2[i + 1][1], colors2[i + 2][1]]),
+      getAvg([colors2[i][2], colors2[i + 1][2], colors2[i + 2][2]])
+    );
+    colors.push(c);
+    colors.push(c);
+    colors.push(c);
+  }
+
+  cBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+  let colorLoc = gl.getAttribLocation(program, "vColor");
+  gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(colorLoc);
+}
 
   points = get_patch(xmin, xmax, zmin, zmax);
 
@@ -266,26 +288,6 @@ function render(timestamp) {
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
   gl.uniformMatrix4fv(normalMatrixLoc, false, flatten(normalmatrix));
-
-  colors = [];
-
-  for (var i = 0; i < colors2.length; i += 3) {
-    let c = vec3(
-      getAvg([colors2[i][0], colors2[i + 1][0], colors2[i + 2][0]]),
-      getAvg([colors2[i][1], colors2[i + 1][1], colors2[i + 2][1]]),
-      getAvg([colors2[i][2], colors2[i + 1][2], colors2[i + 2][2]])
-    );
-    colors.push(c);
-    colors.push(c);
-    colors.push(c);
-  }
-
-  cBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
-  let colorLoc = gl.getAttribLocation(program, "vColor");
-  gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(colorLoc);
 
   if (drawmodes[drawmode_idx] === "t") {
     gl.drawArrays(gl.TRIANGLES, 0, points.length);
