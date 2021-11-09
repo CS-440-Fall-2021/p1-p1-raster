@@ -5,7 +5,7 @@ let program;
 
 let t = 0.0;
 let modeVal = 1.0;
-let lightPos = [-0.3, 0.3, -1.0];
+let lightPos = [10.0, 100.0, 10.0];
 let lightVec = new Float32Array(3);
 let ambientColor = [0.2, 0.5, 0.0];
 let diffuseColor = [0.8, 0.4, 0.0];
