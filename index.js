@@ -109,7 +109,7 @@ window.onload = function init() {
   program = initShaders(gl, "vertex-shader", "fragment-shader");
   gl.useProgram(program);
 
-  points = get_patch(0, 600, 0, 600);
+  points = get_patch(0, 600, 0, 600); //generate initial patch
 
   // Build a wireframe representation from triangles
   try {
@@ -247,8 +247,6 @@ function render(timestamp) {
   if (!stopped) {
     eye = add(eye, at_vec);
   }
-  //console.log(at_vec);
-  // console.log(at_vec);
 
   // Generates terrain of 1200 points with camera in center
   xmin = eye[0] - 1200;

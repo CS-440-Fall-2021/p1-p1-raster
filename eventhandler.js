@@ -8,6 +8,7 @@ function handleKeyDown(event) {
       drawmode_idx = 0;
     }
   } else if (event.key == "C" || event.key == "c") {
+    // toggle shading modes
     shadingmode_idx++;
     if (shadingmode_idx > 2) {
       shadingmode_idx = 0;
@@ -17,34 +18,20 @@ function handleKeyDown(event) {
     //COMMENT OUT THE BELOW LINE
     // mode=1;
   } else if (event.keyCode == 16) {
+    // true if shift pressed
     shiftPressed = true;
-    console.log("Shift Pressed");
   } else if (event.keyCode == 49) {
     //1
+    //vary left
     if (!shiftPressed) {
-      //vary left
       if (left > -0.3) {
         left = left - 0.01;
       }
-
-      // xmin = xmin - 2;
-      // xmax = xmax - 2;
-      // points = get_patch2(xmin, xmax, zmin, zmax);
     } else if (shiftPressed) {
       if (left < -0.05) {
         left = left + 0.01;
       }
     }
-    // if (!shiftPressed) {
-    //   //vary left
-    //   xmin = xmin - 2;
-    //   xmax = xmax - 2;
-    //   points = get_patch2(xmin, xmax, zmin, zmax);
-    // } else if (shiftPressed) {
-    //   xmin = xmin + 2;
-    //   xmax = xmax + 2;
-    //   points = get_patch2(xmin, xmax, zmin, zmax);
-    // }
   } else if (event.keyCode == 50) {
     //2
     //vary right
@@ -69,20 +56,9 @@ function handleKeyDown(event) {
         top_ -= 0.05;
       }
     }
-
-    // if (!shiftPressed) {
-    //   if (eye[1] + 20 < 600) {
-    //     eye = vec3(eye[0], eye[1] + 20, eye[2]);
-    //   }
-    // } else if (shiftPressed) {
-    //   if (eye[1] - 20 > 390) {
-    //     eye = vec3(eye[0], eye[1] - 20, eye[2]);
-    //   }
-    // }
   } else if (event.keyCode == 52) {
     //4
     //vary bottom
-
     if (!shiftPressed) {
       if (bottom > -0.7) {
         bottom -= 0.01;
@@ -92,19 +68,8 @@ function handleKeyDown(event) {
         bottom += 0.01;
       }
     }
-    // if (!shiftPressed) {
-
-    //   // if (eye[1] - 0.02 > 0.27) {
-    //   //   eye = vec3(eye[0], eye[1] - 0.02, eye[2]);
-    //   // }
-    // } else if (shiftPressed) {
-    //   // if (eye[1] + 0.02 < 1) {
-    //   //   eye = vec3(eye[0], eye[1] + 0.02, eye[2]);
-    //   // }
-    // }
   } else if (event.keyCode == 53) {
     //5
-
     if (!shiftPressed) {
       //vary near
       if (near < 1.45) {
@@ -130,52 +95,29 @@ function handleKeyDown(event) {
         console.log(far);
       }
     }
-  }
-  // zmin = zmin - 2;
-  // zmax = zmax - 2;
-  // points = get_patch2(xmin, xmax, zmin, zmax);
-  // render();
-  // } else if (event.key == "w" || event.key == "W") {
-  // } else if (event.key == "W" || event.key == "w") {
-  //   modelViewMatrix = mult(rotMat, lookAt(eye, at, up));
-  //   window.cancelAnimationFrame(anim);
-  //   render();
-  else if (event.keyCode == 27) {
+  } else if (event.keyCode == 27) {
+    //esc
     //quit
-
     points = [];
     zmin = zmax = xmax = xmin = 0;
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     escape = true;
     gl.drawArrays(gl.TRIANGLES, 0, points.length); //Rendering the triangle
-  } else if (event.keyCode == 16) {
-    console.log("shift");
   } else if (event.key == "W" || event.key == "w") {
-    // at_vec[1] = Math.min(at_vec[1] + 10, 600);
+    // change  pitch
     pitch = Math.max(pitch - 1, -90);
-    // console.log(at_vec[1]);
   } else if (event.key == "S" || event.key == "s") {
-    // at_vec[1] = Math.max(at_vec[1] - 10, -280);
+    // change  pitch
     pitch = Math.min(pitch + 1, 45);
-    // console.log(at_vec[1]);
   } else if (event.key == "D" || event.key == "d") {
-    // at_vec[0] = Math.max(at_vec[0] - 10, -280);
-    // xmax += at_vec[0];
-    // xmin += at_vec[0];
+    // change yaw
     yaw = Math.max(yaw - 1, -90);
-    // console.log(at_vec[0]);
   } else if (event.key == "A" || event.key == "a") {
-    // at_vec[0] = Math.min(at_vec[0] + 10, 280);
-    // xmin -= at_vec[0];
-    // xmax -= at_vec[0];
-    // console.log(at_vec[0]);
+    // change yaw
     yaw = Math.min(yaw + 1, 90);
   } else if (event.key == "Q" || event.key == "q") {
-    // at_vec[0] = Math.min(at_vec[0] + 10, 280);
-    // xmin -= at_vec[0];
-    // xmax -= at_vec[0];
-    // console.log(at_vec[0]);
+    // change roll
     roll = Math.max(roll - 1, -90);
     if (roll > -90 && roll <= 0) {
       left -= 0.01;
@@ -185,10 +127,7 @@ function handleKeyDown(event) {
       right -= 0.01;
     }
   } else if (event.key == "E" || event.key == "e") {
-    // at_vec[0] = Math.min(at_vec[0] + 10, 280);
-    // xmin -= at_vec[0];
-    // xmax -= at_vec[0];
-    // console.log(at_vec[0]);
+    // change roll
     roll = Math.min(roll + 1, 90);
     if (roll <= 0) {
       left += 0.01;
@@ -203,11 +142,8 @@ function handleKeyDown(event) {
   } else if (event.keyCode == 40) {
     if (speed > 1) speed = speed - 1;
     else stopped = true;
-  }
-
-  else if (event.key == "T" || event.key == "t") {
-    if (collision_enabled)
-      stopped = false;
+  } else if (event.key == "T" || event.key == "t") {
+    if (collision_enabled) stopped = false;
     collision_enabled = !collision_enabled;
   }
 
