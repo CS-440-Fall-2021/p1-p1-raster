@@ -58,6 +58,7 @@
             if(position.y< 0.00) 
             {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
                 vec3 grass = vec3(0.14, 0.56, 0.31); 
+                return water;
                 return map_point(-300.0,100.0, water, grass, position.y); 
             } //blue
             else if (0.0 < position.y && position.y <150.0)
@@ -72,6 +73,9 @@
                 vec3 snow = vec3(1.0, 1.0, 1.0);
                 return map_point(150.0,600.0, mountain, snow , position.y);  
             }  //white 
+            else{
+                return vec3(0.18039, 0.22353, 0.55686);
+            }
         } 
 
         void main()
@@ -93,26 +97,12 @@
                 normalInterp = vec3(normalMat* vec4(normal, 0.0));
                 gl_Position = projectionMatrix*result; // vertex position in CAMERA COORDINATES
                 gl_PointSize = 2.0;
-                //vertPos = vec3(vector_pos) * vector_pos.w; 
             }
             else if (mode == 1.0){
                 vec4 result=modelViewMatrix*vPosition;
                 gl_Position = projectionMatrix*result; // vertex position in CAMERA COORDINATES
                 gl_PointSize = 2.0;
                 vtxColor = vec4(vColor,1.0);
-
-                //if (vPosition.y < 0.0) {
-                    //blue
-                //    vtxColor = vec4(0.18039, 0.22353, 0.55686, 1);
-                //} else if (0.0 < vPosition.y && vPosition.y < 100.0) {
-                    //green
-                //    vtxColor = vec4(0.14, 0.56, 0.31, 1);
-                //} else if (vPosition.y > 250.0) {
-                    //white
-                //    vtxColor = vec4(1.0, 1.0, 1.0, 1);
-                //} else {
-                //    vtxColor = vec4(0.24, 0.15, 0.08, 1);
-                //}
             }
             else if (mode==2.0)
             {
@@ -127,7 +117,7 @@
                 float Ka = 1.0; 
                 float Kd = 1.0; 
                 float Ks = 0.5; 
-                float shininessVal =5.0; 
+                float shininessVal = 30.0; 
                 vec3 ambientColor = getColor(vertPos);
                 vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
                 vec3 specularColor = vec3(0.0, 0.0, 0.0); // Lambert's cosine law 
@@ -178,7 +168,7 @@
             {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
                 vec3 grass = vec3(0.14, 0.56, 0.31); 
                 //return blue;
-                return map_point(-300.0,100.0, water, grass, position.y); 
+                return water;
             } //blue
             else if (0.0 < position.y && position.y <150.0)
             { 
@@ -194,6 +184,9 @@
                 //return white;
                 return map_point(150.0,600.0, mountain, snow , position.y);  
             }  //white 
+            else{
+                return vec3(0.18039, 0.22353, 0.55686);
+            }
         }
 
         void main()
@@ -207,8 +200,8 @@
                 vec3 L = normalize(lightPos - vertPos); 
                 float Ka = 1.0; 
                 float Kd = 1.0; 
-                float Ks = 0.5; 
-                float shininessVal = 5.0; 
+                float Ks = 1.0; 
+                float shininessVal = 30.0; 
                 vec3 ambientColor = getColor(vertPos);
                 vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
                 vec3 specularColor = vec3(1.0, 1.0, 1.0); // Lambert's cosine law 
@@ -267,6 +260,7 @@
             E or e = Roll Right<br>
             Up key = increase Speed<br>
             Down = decrease Speed <br>
+            T = Enable/Disable collisions<br>
             Escape key to Quit
         </p>
     </div>

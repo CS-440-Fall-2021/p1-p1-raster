@@ -396,6 +396,7 @@ function mat4Invert(m) {
   return true;
 }
 
+// Changes Y coordinate of camera when pitch angle is not zero.
 function move_camera_pitch() {
   eye[1] = Math.max(eye[1] + at_vec[1] * 10, 200);
 
@@ -408,6 +409,10 @@ function move_camera_pitch() {
 
 function move_camera_yaw() {}
 
+
+
+// Checks if camera is near enough to any point
+// Sets speed to 0 if yes
 function detect_collion() {
   let collided = false;
   let temp_eye = add(eye, mult(3, at_vec));
