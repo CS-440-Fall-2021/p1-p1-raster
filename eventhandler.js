@@ -177,20 +177,30 @@ function handleKeyDown(event) {
     // xmax -= at_vec[0];
     // console.log(at_vec[0]);
     roll = Math.max(roll - 1, -90);
-    // if (roll > -90) {
-    //   left -= 0.01;
-    //   right += 0.01;
-    // }
+    if (roll > -90 && roll <= 0) {
+      left -= 0.01;
+      right += 0.01;
+    }
+    else if (roll > 0)
+    {
+      left += 0.01;
+      right -= 0.01;
+    }
   } else if (event.key == "E" || event.key == "e") {
     // at_vec[0] = Math.min(at_vec[0] + 10, 280);
     // xmin -= at_vec[0];
     // xmax -= at_vec[0];
     // console.log(at_vec[0]);
     roll = Math.min(roll + 1, 90);
-    // if (roll < 90) {
-    //   left -= 0.01;
-    //   right += 0.01;
-    // }
+    if (roll <= 0) {
+      left += 0.01;
+      right -= 0.01;
+    }
+    else if (roll > 0 && roll < 90)
+    {
+      left -= 0.01;
+      right += 0.01;
+    }
   } else if (event.keyCode == 38) {
     if (stopped) stopped = false;
     else speed = Math.min(10, speed + 1);
