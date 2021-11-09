@@ -1,4 +1,4 @@
-function get_patch2(xmin, xmax, zmin, zmax) {
+function get_patch(xmin, xmax, zmin, zmax) {
   let ret = [];
   var xDiff = 0; // - xmin;
   var zDiff = 0; // - zmin;
@@ -73,56 +73,6 @@ function map_point(P, Q, A, B, X) {
 
 function getHeight(x, z) {
   return noise.perlin2(-x / 1.5, -z / 1.5) * 1000;
-}
-
-function get_patch(xmin, xmax, zmin, zmax) {
-  var xzMin = vec2(xmin, zmin);
-  var xzMax = vec2(xmax, zmax);
-  var xDivs = 23;
-  var zDivs = 23;
-  row_length = (xmax - xmin) * xDivs;
-  col_length = (zmax - zmin) * zDivs;
-  var ret = [];
-  if (xzMin.type != "vec2" || xzMax.type != "vec2") {
-    throw "get_patch: either xzMin or xzMax is not a vec2";
-  }
-
-  var dim = subtract(xzMax, xzMin);
-  var dx = dim[0] / xDivs;
-  var dz = dim[1] / zDivs;
-  console.log(xmin);
-  console.log(xzMin[0], xzMax[0]);
-  console.log(xzMin[1], xzMax[1]);
-  for (var x = xzMin[0]; x < xzMax[0]; x += dx) {
-    for (var z = xzMin[1]; z < xzMax[1]; z += dz) {
-      //Triangle 1
-      //  x,z
-      //   |\
-      //   |  \
-      //   |    \
-      //   |      \
-      //   |        \
-      //   |__________\
-      // x,z+dz      x+dx,z+dz
-      ret.push(vec4(x, 0, z, 1));
-      ret.push(vec4(x, 0, z + dz, 1));
-      ret.push(vec4(x + dx, 0, z + dz, 1));
-
-      //Triangle 2
-      //  x,z         x+dx,z
-      //    \----------|
-      //      \        |
-      //        \      |
-      //          \    |
-      //            \  |
-      //              \|
-      //           x+dx,z+dz
-      ret.push(vec4(x, 0, z, 1));
-      ret.push(vec4(x + dx, 0, z + dz, 1));
-      ret.push(vec4(x + dx, 0, z, 1));
-    }
-  }
-  return ret;
 }
 
 // TrianglesToWireframe
@@ -446,6 +396,7 @@ function mat4Invert(m) {
   return true;
 }
 
+// Changes Y coordinate of camera when pitch angle is not zero.
 function move_camera_pitch() {
   eye[1] = Math.max(eye[1] + at_vec[1] * 10, 200);
 
@@ -458,16 +409,20 @@ function move_camera_pitch() {
 
 function move_camera_yaw() {}
 
+
+
+// Checks if camera is near enough to any point
+// Sets speed to 0 if yes
 function detect_collion() {
   let collided = false;
-  let temp_eye = add(eye, mult(5, at_vec));
+  let temp_eye = add(eye, mult(3, at_vec));
   temp_eye = vec4(temp_eye[0], temp_eye[1], temp_eye[2], 0);
   for (let i = 0; i < points.length; i++) {
     let diff = subtract(temp_eye, points[i]);
     if (
-      Math.abs(diff[0]) < 50 &&
-      Math.abs(diff[1]) < 50 &&
-      Math.abs(diff[2]) < 50
+      Math.abs(diff[0]) < 25 &&
+      Math.abs(diff[1]) < 25 &&
+      Math.abs(diff[2]) < 25
     ) {
       // console.log(diff);
       speed = 1;
