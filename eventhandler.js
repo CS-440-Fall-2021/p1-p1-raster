@@ -70,8 +70,8 @@ function handleKeyDown(event) {
     }
   } else if (event.keyCode == 53) {
     //5
+    //vary near
     if (!shiftPressed) {
-      //vary near
       if (near < 1.45) {
         near += 0.02;
       }
@@ -139,15 +139,11 @@ function handleKeyDown(event) {
   } else if (event.keyCode == 38) {
     // Increases speed to a limit of 10
     if (stopped) stopped = false;
-
     else speed = Math.min(10, speed + 1);
-
   } else if (event.keyCode == 40) {
     // Decreases speed to 1, then stops the camera
     if (speed > 1) speed = speed - 1;
-
     else stopped = true;
-
   } else if (event.key == "T" || event.key == "t") {
     // Used to toggle collisions
     if (collision_enabled) stopped = false;

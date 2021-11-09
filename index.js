@@ -138,9 +138,9 @@ window.onload = function init() {
     gl.enableVertexAttribArray(normalLoc);
   }
 
+  // get locations
   modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
   projectionMatrixLoc = gl.getUniformLocation(program, "projectionMatrix");
-
   normalMatrixLoc = gl.getUniformLocation(program, "normalMat");
   modeLoc = gl.getUniformLocation(program, "mode");
   lightPosLoc = gl.getUniformLocation(program, "lightPos");
@@ -153,6 +153,8 @@ window.onload = function init() {
   kaLoc = gl.getUniformLocation(program, "Ka");
   kdLoc = gl.getUniformLocation(program, "Kd");
   ksLoc = gl.getUniformLocation(program, "Ks");
+
+  // event listeners for key up and down
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
 
