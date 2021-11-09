@@ -1,5 +1,5 @@
 function get_patch(xmin, xmax, zmin, zmax) {
-  let ret = [];
+  let ret = []; // triangle vertices
   var xDiff = 0; // - xmin;
   var zDiff = 0; // - zmin;
   var xzMin = vec2(xmin, zmin);
@@ -9,9 +9,9 @@ function get_patch(xmin, xmax, zmin, zmax) {
   var dim = subtract(xzMax, xzMin);
   var dx = dim[0] / xDivs;
   var dz = dim[1] / zDivs;
-  let xoff = xmin / 10;
+  let xoff = xmin / 10; // for perlin noise
   for (var x = xzMin[0]; x < xzMax[0]; x += dx) {
-    let zoff = zmin / 10;
+    let zoff = zmin / 10; // for perlin noise
     for (var z = xzMin[1]; z < xzMax[1]; z += dz) {
       //Triangle 1
       //  x,z
@@ -59,29 +59,12 @@ function get_patch(xmin, xmax, zmin, zmax) {
   return ret;
 }
 
-function map_point(P, Q, A, B, X) {
-  let alpha;
-
-  if (typeof P == "number" && typeof Q == "number" && typeof X == "number")
-    alpha = (X - P) / (Q - P);
-  else if (P.length != Q.length || Q.length != X.length)
-    throw "vector dimension mismatch";
-  else alpha = (X[0] - P[0]) / (Q[0] - P[0]);
-
-  return mix(A, B, alpha);
-}
-
 function getHeight(x, z) {
-  return noise.perlin2(-x / 1.5, -z / 1.5) * 1000;
+  return noise.perlin2(-x / 1.5, -z / 1.5) * 1000; // perlin noise
 }
 
-// TrianglesToWireframe
-// Inputs:
-//    vertices: array of vertices ready to draw with WebGL as
-//              primitive type TRIANGLES
-// Outputs:
-//    returns an array of vertices that outline each triangle
-//    when drawn as primitive type LINES
+// returns an array of vertices that outline each triangle
+// when drawn as primitive type LINES
 function TrianglesToWireframe(vertices) {
   //Declare a return array
   let points = [];
@@ -102,6 +85,7 @@ function TrianglesToWireframe(vertices) {
   return points;
 }
 
+// frustum function by WS
 function frustum(left, right, bottom, top, near, far) {
   if (left == right) {
     throw "frustum(): left and right are equal";
@@ -396,23 +380,11 @@ function mat4Invert(m) {
   return true;
 }
 
-// Changes Y coordinate of camera when pitch angle is not zero.
 function move_camera_pitch() {
   eye[1] = Math.max(eye[1] + at_vec[1] * 10, 200);
-
   eye[1] = Math.min(eye[1], 1000);
-
-  // eye = add(eye, mult(10, at_vec));
-  // console.log(eye);
-  // eye[1] = eye[1] + at_vec[1]*0.01;
 }
 
-function move_camera_yaw() {}
-
-
-
-// Checks if camera is near enough to any point
-// Sets speed to 0 if yes
 function detect_collion() {
   let collided = false;
   let temp_eye = add(eye, mult(3, at_vec));
@@ -424,7 +396,6 @@ function detect_collion() {
       Math.abs(diff[1]) < 25 &&
       Math.abs(diff[2]) < 25
     ) {
-      // console.log(diff);
       speed = 1;
       stopped = true;
       collided = true;

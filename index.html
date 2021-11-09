@@ -19,7 +19,6 @@
         in vec3 vColor;  // attribute
         out vec4 vtxColor;
         in vec3 normal; 
-        //uniform mat4 uTransformMatrix;
         uniform mat4 modelViewMatrix;
         uniform mat4 projectionMatrix;
         uniform mat4 normalMat; 
@@ -46,17 +45,11 @@
             float alpha = ( X - P) / ( Q - P );
             return ( 1.0 - alpha ) *A + alpha * B;
         }
-
-
-        float map_vertex(float vertex_coord, float min, float max, float map_min, float map_max)
-        {
-            float alpha = (vertex_coord - min) / (max - min);
-            return (alpha * map_max) + ((1.0 - alpha) * map_min);
-        }
-        
+    
         vec3 getColor(vec3 position) { 
             if(position.y< 0.00) 
-            {   vec3 water = vec3(0.18039, 0.22353, 0.55686);
+            {   
+                vec3 water = vec3(0.18039, 0.22353, 0.55686);
                 vec3 grass = vec3(0.14, 0.56, 0.31); 
                 return water;
                 return map_point(-300.0,100.0, water, grass, position.y); 
@@ -80,16 +73,6 @@
 
         void main()
         {
-            float c = cos(1.0);                         
-            float s = sin(1.0);
-            mat3 rotation = mat3(1,  0,  0,
-            0,  c,  -s,
-            0, s,  c); 
-            
-            vec4 vector_pos = vec4(map_vertex(vPosition[0], float(xmin), float(xmax), -1.0, 1.0), 
-                            (map_vertex(vPosition[1], 0.0, float(ymax), 0.0, 0.5)), 
-                            map_vertex(vPosition[2], float(zmin), float(zmax), -1.0, 1.0), 
-                            vPosition[3]);
             if (mode==3.0)
             {
                 vec4 result=modelViewMatrix*vPosition;
@@ -223,7 +206,6 @@
 
     <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/initShadersES6.js"></script>
     <script src="http://interactivecomputergraphics.com/8E/Code%20update/Common/MVES6.js"></script>
-    <!-- <script src="p5.js"></script> -->
     <script type="text/javascript" src="perlin.js"></script>
     <script type="text/javascript" src="index.js"></script>
     <script type="text/javascript" src="eventhandler.js"></script>
