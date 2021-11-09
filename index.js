@@ -281,6 +281,7 @@ function render(timestamp) {
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
   gl.uniformMatrix4fv(normalMatrixLoc, false, flatten(normalmatrix));
 
+  //Changing terrrain view modes
   if (drawmodes[drawmode_idx] === "t") {
     gl.drawArrays(gl.TRIANGLES, 0, points.length);
   } else if (drawmodes[drawmode_idx] === "p") {
