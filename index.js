@@ -5,7 +5,7 @@ let program;
 
 let t = 0.0;
 let modeVal = 1.0;
-let lightPos = [-0.3, 0.3, -1.0];
+let lightPos = [10.0, 100.0, 10.0];
 let lightVec = new Float32Array(3);
 let ambientColor = [0.2, 0.5, 0.0];
 let diffuseColor = [0.8, 0.4, 0.0];
@@ -185,7 +185,6 @@ window.onload = function init() {
   let positionLoc = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(positionLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionLoc);
-  
 
   normalLoc = gl.getAttribLocation(program, "normal");
   if (normalLoc != -1) {
@@ -253,14 +252,9 @@ function render(timestamp) {
   //   radius * Math.cos(theta)
   // );
 
-  
-
-
-
   if (flag != 1) {
     // zmin = zmin + 1;
     // zmax = zmax + 1;
-
     // xmin = xmin - 1;
     // xmax = xmax - 1;
   }
@@ -307,7 +301,7 @@ function render(timestamp) {
 
   let ymax_loc = gl.getUniformLocation(program, "ymax");
   gl.uniform1i(ymax_loc, canvas.height);
-  
+
   // console.log(pitch);
   let rotate_x_matrix = rotateX(pitch);
   let rotate_y_matrix = rotateY(yaw);
@@ -318,25 +312,24 @@ function render(timestamp) {
   up = vec3(up[0], up[1], up[2]);
 
   at_vec = vec3(0.0, 0.0, speed);
-  at_vec = vec4(at_vec[0], at_vec[1], at_vec[2], 0)
+  at_vec = vec4(at_vec[0], at_vec[1], at_vec[2], 0);
   let rotate_xy = mult(rotate_y_matrix, rotate_x_matrix);
   at_vec = mult(rotate_xy, at_vec);
 
   at_vec = vec3(at_vec[0], at_vec[1], at_vec[2]);
 
-  if (!stopped)
-  {
+  if (!stopped) {
     move_camera_pitch();
     // console.log(eye);
     // console.log(xmin, xmax);
     // console.log(zmin, zmax);
     // move_camera_yaw();
-    
+
     at = add(eye, at_vec);
     modelViewMatrix = lookAt(eye, at, up);
-    
+
     eye = add(eye, at_vec);
-    
+
     //console.log(at_vec);
     // console.log(at_vec);
     xmin = eye[0] - 1200;
@@ -355,21 +348,23 @@ function render(timestamp) {
   modelviewInv = inverse4(modelViewMatrix);
   normalmatrix = transpose(modelviewInv);
 
-  
-
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
   gl.uniformMatrix4fv(normalMatrixLoc, false, flatten(normalmatrix));
 
-  colors =[];
+  colors = [];
 
-  for (var i = 0; i < colors2.length; i+=3){
-    let c = vec3(getAvg([colors2[i][0],colors2[i+1][0], colors2[i+2][0]]),getAvg([colors2[i][1],colors2[i+1][1], colors2[i+2][1]]), getAvg([colors2[i][2],colors2[i+1][2], colors2[i+2][2]]));
+  for (var i = 0; i < colors2.length; i += 3) {
+    let c = vec3(
+      getAvg([colors2[i][0], colors2[i + 1][0], colors2[i + 2][0]]),
+      getAvg([colors2[i][1], colors2[i + 1][1], colors2[i + 2][1]]),
+      getAvg([colors2[i][2], colors2[i + 1][2], colors2[i + 2][2]])
+    );
     colors.push(c);
     colors.push(c);
     colors.push(c);
   }
-  
+
   cBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
