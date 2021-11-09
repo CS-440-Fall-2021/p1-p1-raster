@@ -93,6 +93,9 @@ let pitch = 0;
 let yaw = 0;
 let roll = 0;
 
+let speed = 1.0;
+let stopped = false;
+
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
 
@@ -314,30 +317,34 @@ function render(timestamp) {
   up = mult(rotate_z_matrix, up);
   up = vec3(up[0], up[1], up[2]);
 
-  at_vec = vec3(0.0, 0.0, 1.0);
+  at_vec = vec3(0.0, 0.0, speed);
   at_vec = vec4(at_vec[0], at_vec[1], at_vec[2], 0)
   let rotate_xy = mult(rotate_y_matrix, rotate_x_matrix);
   at_vec = mult(rotate_xy, at_vec);
 
   at_vec = vec3(at_vec[0], at_vec[1], at_vec[2]);
-  move_camera_pitch();
-  // console.log(eye);
-  // console.log(xmin, xmax);
-  // console.log(zmin, zmax);
-  // move_camera_yaw();
-  
-  at = add(eye, at_vec);
-  modelViewMatrix = lookAt(eye, at, up);
-  
-  new_eye = add(new_eye, at_vec);
-  
-  // console.log(new_eye);
-  // console.log(at_vec);
-  xmin = new_eye[0] - 1200;
-  xmax = new_eye[0] + 1200;
 
-  zmin = new_eye[2] - 1200;
-  zmax = new_eye[2] + 1200;
+  if (!stopped)
+  {
+    move_camera_pitch();
+    // console.log(eye);
+    // console.log(xmin, xmax);
+    // console.log(zmin, zmax);
+    // move_camera_yaw();
+    
+    at = add(eye, at_vec);
+    modelViewMatrix = lookAt(eye, at, up);
+    
+    eye = add(eye, at_vec);
+    
+    console.log(at_vec);
+    // console.log(at_vec);
+    xmin = eye[0] - 1200;
+    xmax = eye[0] + 1200;
+
+    zmin = eye[2] - 1200;
+    zmax = eye[2] + 1200;
+  }
 
   // projectionMatrix = perspective(fovy, aspect, near, far);
   // frustum(left, right, bottom, top, near, far);

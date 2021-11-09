@@ -1,7 +1,7 @@
 function get_patch2(xmin, xmax, zmin, zmax) {
   let ret = [];
-  var xDiff = 0;
-  var zDiff = 0;
+  var xDiff = 0// - xmin;
+  var zDiff = 0// - zmin;
   var xzMin = vec2(xmin, zmin);
   var xzMax = vec2(xmax, zmax);
   var xDivs = 150;
@@ -453,7 +453,7 @@ function move_camera_pitch()
   eye[1] = Math.min(eye[1], 600);
 
   // eye = add(eye, mult(10, at_vec));
-  console.log(eye);
+  // console.log(eye);
   // eye[1] = eye[1] + at_vec[1]*0.01;
 }
 

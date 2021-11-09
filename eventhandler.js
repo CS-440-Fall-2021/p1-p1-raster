@@ -196,6 +196,20 @@ function handleKeyDown(event) {
     roll = Math.min(roll + 1, 90);
   }
 
+  else if (event.keyCode == 38) {
+    if (stopped)
+      stopped = false;
+    else
+      speed = Math.min(10, speed + 1);
+  }
+
+  else if (event.keyCode == 40) {
+    if (speed > 1)
+      speed = speed - 1;
+    else
+      stopped = true;
+  }
+
   window.cancelAnimationFrame(anim);
   anim = window.requestAnimationFrame(render);
 }
