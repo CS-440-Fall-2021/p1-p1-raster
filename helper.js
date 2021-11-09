@@ -455,6 +455,5 @@ function getAvg(array) {
   for (var i = 0; i < array.length; i++) {
     sum += array[i]; //don't forget to add the base
   }
-
   return sum / array.length;
 }
