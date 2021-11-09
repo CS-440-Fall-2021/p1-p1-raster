@@ -205,6 +205,12 @@ function handleKeyDown(event) {
     else stopped = true;
   }
 
+  else if (event.key == "T" || event.key == "t") {
+    if (collision_enabled)
+      stopped = false;
+    collision_enabled = !collision_enabled;
+  }
+
   window.cancelAnimationFrame(anim);
   anim = window.requestAnimationFrame(render);
 }

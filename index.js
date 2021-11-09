@@ -95,6 +95,7 @@ let roll = 0;
 
 let speed = 1.0;
 let stopped = false;
+let collision_enabled = false;
 
 var drawmodes = ["t", "p", "l"];
 var drawmode_idx = 0;
@@ -307,7 +308,8 @@ function render(timestamp) {
   let rotate_y_matrix = rotateY(yaw);
   let rotate_z_matrix = rotateZ(roll);
 
-  detect_collion();
+  if (collision_enabled)
+    detect_collion();
 
   up = vec4(0, 1, 0, 0);
   up = mult(rotate_z_matrix, up);
