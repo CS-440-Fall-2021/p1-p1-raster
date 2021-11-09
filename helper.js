@@ -518,3 +518,13 @@ function transpose(m) {
       throw "transpose(): trying to transpose a non-matrix";
   }
 }
+
+function getAvg(array){
+  var sum = 0;
+  for( var i = 0; i < array.length; i++ ){
+    sum += array[i]; //don't forget to add the base
+}
+
+return sum/array.length;
+
+}

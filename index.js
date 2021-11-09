@@ -111,6 +111,9 @@ var rotMat;
 
 var anim;
 
+var colors;
+var colors2;
+
 let transformMatrixUniform;
 //--------------------------------------------------------------------------------------------------------------------------
 
@@ -182,10 +185,7 @@ window.onload = function init() {
   let positionLoc = gl.getAttribLocation(program, "vPosition");
   gl.vertexAttribPointer(positionLoc, 4, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionLoc);
-
-  cBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, 0, gl.STATIC_DRAW);
+  
 
   normalLoc = gl.getAttribLocation(program, "normal");
   if (normalLoc != -1) {
@@ -230,21 +230,22 @@ window.onload = function init() {
 function render(timestamp) {
   // gl.clear(gl.COLOR_BUFFER_BIT);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  // let colors = [];
-  // for (let i = 0; i < points.length; i++) {
-  //   if (points[i][1] < -0.05) {
-  //     //blue
-  //     colors.push(vec3(0.18039, 0.22353, 0.55686));
-  //   } else if (0.0 < points[i][1] && points[i][1] < 0.06) {
-  //     //brown
-  //     colors.push(vec3(0.24, 0.15, 0.08));
-  //   } else if (points[i][1] > 0.13) {
-  //     //white
-  //     colors.push(vec3(1.0, 1.0, 1.0));
-  //   } else {
-  //     colors.push(vec3(0.14, 0.56, 0.31));
-  //   }
-  // }
+
+  colors2 = [];
+  for (let i = 0; i < points.length; i++) {
+    if (points[i][1] < 0.0) {
+      //blue
+      colors2.push(vec3(0.18039, 0.22353, 0.55686));
+    } else if (0.0 < points[i][1] && points[i][1] < 100.0) {
+      //brown
+      colors2.push(vec3(0.14, 0.56, 0.31));
+    } else if (points[i][1] > 250.0) {
+      //white
+      colors2.push(vec3(1.0, 1.0, 1.0));
+    } else {
+      colors2.push(vec3(0.24, 0.15, 0.08));
+    }
+  }
 
   // eye = vec3(
   //   radius * Math.sin(theta) * Math.cos(phi),
@@ -252,8 +253,9 @@ function render(timestamp) {
   //   radius * Math.cos(theta)
   // );
 
-  // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  // gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+  
+
+
 
   if (flag != 1) {
     // zmin = zmin + 1;
@@ -281,8 +283,6 @@ function render(timestamp) {
     gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
   }
 
-  if (normalMatrixLoc != -1)
-    gl.uniformMatrix4fv(normalMatrixLoc, false, normalmatrix);
   if (modeLoc != -1) gl.uniform1f(modeLoc, modeVal);
   if (kaLoc != -1) gl.uniform1f(kaLoc, kaVal);
   if (kdLoc != -1) gl.uniform1f(kdLoc, kdVal);
@@ -337,7 +337,7 @@ function render(timestamp) {
     
     eye = add(eye, at_vec);
     
-    console.log(at_vec);
+    //console.log(at_vec);
     // console.log(at_vec);
     xmin = eye[0] - 1200;
     xmax = eye[0] + 1200;
@@ -353,12 +353,29 @@ function render(timestamp) {
   // projectionMatrix = mult(projectionMatrix, modelViewMatrix);`
 
   modelviewInv = inverse4(modelViewMatrix);
-  // console.log(modelviewInv);
   normalmatrix = transpose(modelviewInv);
-  // console.log(normalmatrix);
+
+  
 
   gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
   gl.uniformMatrix4fv(projectionMatrixLoc, false, flatten(projectionMatrix));
+  gl.uniformMatrix4fv(normalMatrixLoc, false, flatten(normalmatrix));
+
+  colors =[];
+
+  for (var i = 0; i < colors2.length; i+=3){
+    let c = vec3(getAvg([colors2[i][0],colors2[i+1][0], colors2[i+2][0]]),getAvg([colors2[i][1],colors2[i+1][1], colors2[i+2][1]]), getAvg([colors2[i][2],colors2[i+1][2], colors2[i+2][2]]));
+    colors.push(c);
+    colors.push(c);
+    colors.push(c);
+  }
+  
+  cBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW);
+  let colorLoc = gl.getAttribLocation(program, "vColor");
+  gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(colorLoc);
 
   if (drawmodes[drawmode_idx] === "t") {
     gl.drawArrays(gl.TRIANGLES, 0, points.length);
